@@ -22,6 +22,7 @@ import Icons from "views/Icons.js";
 import Typography from "views/Typography.js";
 import WargaList from "views/Warga";
 import PendudukList from "views/Penduduk";
+import PendudukList2 from "views/Penduduk2";
 
 import Maps from "views/Map.js";
 import UserPage from "views/User.js";
@@ -64,6 +65,14 @@ var routes = [
     name: "Data Kependudukan Detail", // Beri nama yang sesuai
     icon: "nc-icon nc-tile-56",
     component: <PendudukList />,
+    layout: "/admin",
+    isVisible: false // Rute ini tidak ditampilkan di sidebar
+  },
+  {
+    path: "/penduduk/:namadusun/kategori/:kategori",
+    name: "Data Kependudukan Detail", // Beri nama yang sesuai
+    icon: "nc-icon nc-tile-56",
+    component: <PendudukList2 />,
     layout: "/admin",
     isVisible: false // Rute ini tidak ditampilkan di sidebar
   },
