@@ -76,8 +76,8 @@ function PendudukKategori2() {
                 <td>{warga.dusun}</td>
                 <td>{warga.kategori}</td>
                 <td>
-                  <Link>
-                    <button className="p-2 m-2 bg-success rounded-lg text-white border-0">Show</button>
+                <Link to={`/admin/penduduk/${namadusun}/kategori/${kategori}/${warga.nik}`}>
+                    <button className="p-2 m-2 bg-success rounded-lg text-white border-0">Modifikasi</button>
                   </Link>
                   <button className="p-2 m-2 bg-warning rounded-lg text-white border-0">Delete</button>
                 </td>
