@@ -26,7 +26,7 @@ function Desa() {
 
   return (
     <div className="content">
-      <h2>Data Kependudukan Masyarakat Desa Srigading</h2>
+      <h2>Informasi Kesehatan Desa Srigading</h2>
       {error && <p>Error: {error}</p>}
       
       <Row>

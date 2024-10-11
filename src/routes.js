@@ -90,7 +90,7 @@ var routes = [
   },
   {
     path: "/desa",
-    name: " Posyandu Desa ", // Beri nama yang sesuai
+    name: " Kesehatan Desa ", // Beri nama yang sesuai
     icon: "nc-icon nc-tile-56",
     component: <Desa />,
     layout: "/admin",
