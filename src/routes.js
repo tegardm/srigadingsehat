@@ -24,6 +24,9 @@ import WargaList from "views/Warga";
 import PendudukList from "views/Penduduk";
 import PendudukList2 from "views/Penduduk2";
 import PendudukModifikasi from "views/PendudukModifikasi";
+import DesaKegiatan from "views/DesaKegiatan";
+import Desa from "views/Desa";
+import DesaDetailKegiatan from "views/DesaDetailKegiatan";
 
 import Maps from "views/Map.js";
 import UserPage from "views/User.js";
@@ -82,6 +85,30 @@ var routes = [
     name: "Data Kependudukan Detail", // Beri nama yang sesuai
     icon: "nc-icon nc-tile-56",
     component: <PendudukModifikasi />,
+    layout: "/admin",
+    isVisible: false // Rute ini tidak ditampilkan di sidebar
+  },
+  {
+    path: "/desa",
+    name: " Posyandu Desa ", // Beri nama yang sesuai
+    icon: "nc-icon nc-tile-56",
+    component: <Desa />,
+    layout: "/admin",
+    isVisible: true // Rute ini tidak ditampilkan di sidebar
+  },
+  {
+    path: "/desa/:namadusun",
+    name: " Posyandu Desa ", // Beri nama yang sesuai
+    icon: "nc-icon nc-tile-56",
+    component: <DesaKegiatan />,
+    layout: "/admin",
+    isVisible: false // Rute ini tidak ditampilkan di sidebar
+  },
+  {
+    path: "/desa/:namadusun/kegiatan/:namakegiatan",
+    name: " Posyandu Desa ", // Beri nama yang sesuai
+    icon: "nc-icon nc-tile-56",
+    component: <DesaDetailKegiatan />,
     layout: "/admin",
     isVisible: false // Rute ini tidak ditampilkan di sidebar
   },
