@@ -25,13 +25,17 @@ import PendudukList from "views/Penduduk";
 import PendudukList2 from "views/Penduduk2";
 import PendudukModifikasi from "views/PendudukModifikasi";
 import DesaKegiatan from "views/DesaKegiatan";
+import DesaModifikasi from "views/DesaModifikasi";
 import Desa from "views/Desa";
 import Sekolah from "views/Sekolah";
 import SekolahList from "views/SekolahList";
 import SekolahDetail from "views/SekolahDetail";
 import DesaDetailKegiatan from "views/DesaDetailKegiatan";
-import Maps from "views/Map.js";
+import Lingkungan from "views/Lingkungan";
+import LingkunganDetail from "views/LingkunganDetail";
 import UserPage from "views/User.js";
+import SekolahModifikasi from "views/SekolahModifikasi";
+import LingkunganModifikasi from "views/LingkunganModifikasi";
 
 
 var routes = [
@@ -43,14 +47,7 @@ var routes = [
     layout: "/admin",
     isVisible: true // Ubah ini untuk konsistensi
   },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "nc-icon nc-pin-3",
-    component: <Maps />,
-    layout: "/admin",
-    isVisible: true // Ubah ini untuk konsistensi
-  },
+
   {
     path: "/user-page",
     name: "User Profile",
@@ -116,6 +113,14 @@ var routes = [
     isVisible: false // Rute ini tidak ditampilkan di sidebar
   },
   {
+    path: "/desa/:namadusun/kegiatan/:namakegiatan/modifikasi",
+    name: " Posyandu Desa ", // Beri nama yang sesuai
+    icon: "nc-icon nc-tile-56",
+    component: <DesaModifikasi />,
+    layout: "/admin",
+    isVisible: false // Rute ini tidak ditampilkan di sidebar
+  },
+  {
     path: "/sekolah",
     name: "Kesehatan Sekolah",
     icon: "nc-icon nc-caps-small",
@@ -139,7 +144,38 @@ var routes = [
     layout: "/admin",
     isVisible: false
   },
-  
+  {
+    path: "/sekolah/:namakegiatan/:namasekolah/modifikasi",
+    name: "Kegiatan Sekolah",
+    icon: "nc-icon nc-caps-small",
+    component: <SekolahModifikasi/>, // Referensi ke komponen, bukan JSX
+    layout: "/admin",
+    isVisible: false
+  },
+  {
+    path: "/lingkungan",
+    name: "Lingkungan",
+    icon: "nc-icon nc-caps-small",
+    component: <Lingkungan />,
+    layout: "/admin",
+    isVisible: true // Ubah ini untuk konsistensi
+  },
+  {
+    path: "/lingkungan/:kegiatan",
+    name: "Lingkungan",
+    icon: "nc-icon nc-caps-small",
+    component: <LingkunganDetail />,
+    layout: "/admin",
+    isVisible: false // Ubah ini untuk konsistensi
+  },
+  {
+    path: "/lingkungan/:kegiatan/modifikasi",
+    name: "Lingkungan",
+    icon: "nc-icon nc-caps-small",
+    component: <LingkunganModifikasi />,
+    layout: "/admin",
+    isVisible: false // Ubah ini untuk konsistensi
+  },
   {
     path: "/typography",
     name: "Typography",
