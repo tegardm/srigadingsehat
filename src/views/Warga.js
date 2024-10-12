@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Link } from "react-router-dom";
-import $ from 'jquery'; // Import jQuery
-import 'datatables.net'; // Import DataTables jQuery Plugin
+import { Card, Row, Col, Button } from "react-bootstrap"; // Import komponen dari React Bootstrap
 
 function Kelahiran() {
   const [dusunData, setDusunData] = useState([]);
   const [error, setError] = useState(null);
+
+  // Thumbnail Dummy Statis
+  const dummyThumbnail = "https://via.placeholder.com/300x200?text=Thumbnail+Dusun";
 
   // Fetch data from Firestore
   useEffect(() => {
@@ -25,53 +27,41 @@ function Kelahiran() {
     fetchDusunData();
   }, []);
 
-  // Inisialisasi DataTables setelah data dimuat
-  useEffect(() => {
-    if (dusunData.length > 0) {
-      const table = $('#kelahiranTable').DataTable(); // Inisialisasi DataTable
-      
-      return () => {
-        // Destroy DataTable sebelum komponen di-unmount atau di-re-render
-        table.destroy();
-      };
-    }
-  }, [dusunData]);
-
   return (
     <div className="content">
       <h2>Data Kependudukan Masyarakat Desa Srigading</h2>
       {error && <p>Error: {error}</p>}
-      <table id="kelahiranTable" className="display">
-        <thead>
-          <tr>
-            <th>Nama Dusun</th>
-            <th>Jumlah Penduduk</th>
-            <th>Alamat</th>
-            <th>Action (Admin Only)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dusunData && dusunData.length > 0 ? (
-            dusunData.map((dusun, index) => (
-              <tr key={index}>
-                <td>{dusun.nama ? dusun.nama : "Tidak diketahui"}</td>
-                <td>{dusun.jumlah_penduduk ? dusun.jumlah_penduduk : "N/A"}</td>
-                <td>{dusun.alamat ? dusun.alamat : "Alamat tidak tersedia"}</td>
-                <td>
+      
+      <Row>
+        {dusunData && dusunData.length > 0 ? (
+          dusunData.map((dusun, index) => (
+            <Col md={4} key={index} className="mb-4">
+              <Card>
+                {/* Thumbnail Dummy */}
+                <Card.Img variant="top" src={dummyThumbnail} alt="Thumbnail Dusun" />
+
+                <Card.Body>
+                  <Card.Title>{dusun.nama ? dusun.nama : "Tidak diketahui"}</Card.Title>
+                  <Card.Text>
+                    <strong>Jumlah Penduduk:</strong> {dusun.jumlah_penduduk ? dusun.jumlah_penduduk : "N/A"}
+                  </Card.Text>
+                  <Card.Text>
+                    <strong>Alamat:</strong> {dusun.alamat ? dusun.alamat : "Alamat tidak tersedia"}
+                  </Card.Text>
                   <Link to={`/admin/penduduk/${dusun.nama}`}>
-                    <button className="p-2 m-2 bg-success rounded-lg text-white border-0">Show</button>
+                    <Button variant="success" className="mr-2">Show</Button>
                   </Link>
-                  <button className="p-2 m-2 bg-warning rounded-lg text-white border-0">Delete</button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="4">Data tidak tersedia.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+                  <Link to={`/admin/penduduk/${dusun.nama}/modifikasi`}>
+                    <Button variant="warning">Modifikasi</Button>
+                  </Link>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))
+        ) : (
+          <p>Data tidak tersedia.</p>
+        )}
+      </Row>
     </div>
   );
 }

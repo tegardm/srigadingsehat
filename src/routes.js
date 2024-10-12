@@ -26,10 +26,13 @@ import PendudukList2 from "views/Penduduk2";
 import PendudukModifikasi from "views/PendudukModifikasi";
 import DesaKegiatan from "views/DesaKegiatan";
 import Desa from "views/Desa";
+import Sekolah from "views/Sekolah";
+import SekolahList from "views/SekolahList";
+import SekolahDetail from "views/SekolahDetail";
 import DesaDetailKegiatan from "views/DesaDetailKegiatan";
-
 import Maps from "views/Map.js";
 import UserPage from "views/User.js";
+
 
 var routes = [
   {
@@ -112,6 +115,31 @@ var routes = [
     layout: "/admin",
     isVisible: false // Rute ini tidak ditampilkan di sidebar
   },
+  {
+    path: "/sekolah",
+    name: "Kesehatan Sekolah",
+    icon: "nc-icon nc-caps-small",
+    component: <Sekolah/>, // Referensi ke komponen, bukan JSX
+    layout: "/admin",
+    isVisible: true
+  },
+  {
+    path: "/sekolah/:namakegiatan",
+    name: "List Sekolah",
+    icon: "nc-icon nc-caps-small",
+    component: <SekolahList/>, // Referensi ke komponen, bukan JSX
+    layout: "/admin",
+    isVisible: false
+  },
+  {
+    path: "/sekolah/:namakegiatan/:namasekolah",
+    name: "Kegiatan Sekolah",
+    icon: "nc-icon nc-caps-small",
+    component: <SekolahDetail/>, // Referensi ke komponen, bukan JSX
+    layout: "/admin",
+    isVisible: false
+  },
+  
   {
     path: "/typography",
     name: "Typography",

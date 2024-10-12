@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Link } from "react-router-dom";
@@ -26,32 +26,41 @@ function Desa() {
 
   return (
     <div className="content">
-      <h2>Informasi Kesehatan Desa Srigading</h2>
-      {error && <p>Error: {error}</p>}
+      <h2 className="text-center my-4">Informasi Kesehatan Desa Srigading</h2>
+      {error && <p className="text-danger">Error: {error}</p>}
       
       <Row>
         {dusunData && dusunData.length > 0 ? (
           dusunData.map((dusun, index) => (
-            <Col md={4} key={index} className="mb-4">
-              <Card>
+            <Col md={4} sm={6} xs={12} key={index} className="mb-4">
+              <Card className="shadow-sm">
+                {/* Thumbnail Section */}
+                <Card.Img
+                  variant="top"
+                  src="https://via.placeholder.com/350x200?text=Desa+Srigading"
+                  alt="Thumbnail"
+                  style={{ height: "200px", objectFit: "cover" }}
+                />
+                
+                {/* Card Content */}
                 <Card.Body>
-                  <Card.Title>{dusun.nama ? dusun.nama : "Tidak diketahui"}</Card.Title>
-                  <Card.Text>
-                    <strong>Jumlah Penduduk:</strong> {dusun.jumlah_penduduk ? dusun.jumlah_penduduk : "N/A"}
+                  <Card.Title className="text-center">
+                  {dusun.nama ? dusun.nama.toUpperCase() : "Nama Desa Tidak Diketahui"}
+                  </Card.Title>
+                  <Card.Text className="text-muted text-center  ">
+                    {dusun.alamat ? dusun.alamat : "Alamat tidak tersedia"}
                   </Card.Text>
-                  <Card.Text>
-                    <strong>Alamat:</strong> {dusun.alamat ? dusun.alamat : "Alamat tidak tersedia"}
-                  </Card.Text>
-                  <Link to={`/admin/desa/${dusun.nama}`}>
-                    <Button variant="success" className="mr-2">Lihat Kegiatan</Button>
-                  </Link>
-                  {/* <Button variant="warning">Delete</Button> */}
+                  <div className="text-center">
+                    <Link to={`/admin/desa/${dusun.nama}`}>
+                      <Button variant="success" className="btn-block">Lihat Kegiatan</Button>
+                    </Link>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
           ))
         ) : (
-          <p>Data tidak tersedia.</p>
+          <p className="text-center w-100">Data tidak tersedia.</p>
         )}
       </Row>
     </div>
