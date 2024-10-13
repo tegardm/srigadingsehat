@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Paper Dashboard React - v1.3.2
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-* Licensed under MIT (https://github.com/creativetimofficial/paper-dashboard-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import Dashboard from "views/Dashboard.js";
 import Notifications from "views/Notifications.js";
 import Icons from "views/Icons.js";
@@ -32,11 +14,10 @@ import SekolahList from "views/SekolahList";
 import SekolahDetail from "views/SekolahDetail";
 import DesaDetailKegiatan from "views/DesaDetailKegiatan";
 import Lingkungan from "views/Lingkungan";
-import LingkunganDetail from "views/LingkunganDetail";
+import LingkunganDetailAdmin from "views/LingkunganDetailAdmin";
 import UserPage from "views/User.js";
 import SekolahModifikasi from "views/SekolahModifikasi";
 import LingkunganModifikasi from "views/LingkunganModifikasi";
-
 
 var routes = [
   {
@@ -45,16 +26,15 @@ var routes = [
     icon: "nc-icon nc-bank",
     component: <Dashboard />,
     layout: "/admin",
-    isVisible: true // Ubah ini untuk konsistensi
+    isVisible: true
   },
-
   {
     path: "/user-page",
     name: "User Profile",
     icon: "nc-icon nc-single-02",
     component: <UserPage />,
     layout: "/admin",
-    isVisible: true // Ubah ini untuk konsistensi
+    isVisible: true
   },
   {
     path: "/penduduk",
@@ -62,69 +42,69 @@ var routes = [
     icon: "nc-icon nc-tile-56",
     component: <WargaList />,
     layout: "/admin",
-    isVisible: true // Ubah ini untuk konsistensi
+    isVisible: true
   },
   {
     path: "/penduduk/:namadusun",
-    name: "Data Kependudukan Detail", // Beri nama yang sesuai
+    name: "Data Kependudukan Detail",
     icon: "nc-icon nc-tile-56",
     component: <PendudukList />,
     layout: "/admin",
-    isVisible: false // Rute ini tidak ditampilkan di sidebar
+    isVisible: false
   },
   {
     path: "/penduduk/:namadusun/kategori/:kategori",
-    name: "Data Kependudukan Detail", // Beri nama yang sesuai
+    name: "Data Kependudukan Detail",
     icon: "nc-icon nc-tile-56",
     component: <PendudukList2 />,
     layout: "/admin",
-    isVisible: false // Rute ini tidak ditampilkan di sidebar
+    isVisible: false
   },
   {
     path: "/penduduk/:namadusun/kategori/:kategori/:nik",
-    name: "Data Kependudukan Detail", // Beri nama yang sesuai
+    name: "Data Kependudukan Detail",
     icon: "nc-icon nc-tile-56",
     component: <PendudukModifikasi />,
     layout: "/admin",
-    isVisible: false // Rute ini tidak ditampilkan di sidebar
+    isVisible: false
   },
   {
     path: "/desa",
-    name: " Kesehatan Desa ", // Beri nama yang sesuai
+    name: "Kesehatan Desa",
     icon: "nc-icon nc-tile-56",
     component: <Desa />,
     layout: "/admin",
-    isVisible: true // Rute ini tidak ditampilkan di sidebar
+    isVisible: true
   },
   {
     path: "/desa/:namadusun",
-    name: " Posyandu Desa ", // Beri nama yang sesuai
+    name: "Posyandu Desa",
     icon: "nc-icon nc-tile-56",
     component: <DesaKegiatan />,
     layout: "/admin",
-    isVisible: false // Rute ini tidak ditampilkan di sidebar
+    isVisible: false
   },
   {
     path: "/desa/:namadusun/kegiatan/:namakegiatan",
-    name: " Posyandu Desa ", // Beri nama yang sesuai
+    name: "Posyandu Desa",
     icon: "nc-icon nc-tile-56",
     component: <DesaDetailKegiatan />,
     layout: "/admin",
-    isVisible: false // Rute ini tidak ditampilkan di sidebar
+    isVisible: false
   },
   {
     path: "/desa/:namadusun/kegiatan/:namakegiatan/modifikasi",
-    name: " Posyandu Desa ", // Beri nama yang sesuai
+    name: "Posyandu Desa",
     icon: "nc-icon nc-tile-56",
     component: <DesaModifikasi />,
     layout: "/admin",
-    isVisible: false // Rute ini tidak ditampilkan di sidebar
+    isVisible: false
   },
   {
     path: "/sekolah",
     name: "Kesehatan Sekolah",
     icon: "nc-icon nc-caps-small",
-    component: <Sekolah/>, // Referensi ke komponen, bukan JSX
+    component: <Sekolah />,
     layout: "/admin",
     isVisible: true
   },
@@ -132,7 +112,7 @@ var routes = [
     path: "/sekolah/:namakegiatan",
     name: "List Sekolah",
     icon: "nc-icon nc-caps-small",
-    component: <SekolahList/>, // Referensi ke komponen, bukan JSX
+    component: <SekolahList />,
     layout: "/admin",
     isVisible: false
   },
@@ -140,7 +120,7 @@ var routes = [
     path: "/sekolah/:namakegiatan/:namasekolah",
     name: "Kegiatan Sekolah",
     icon: "nc-icon nc-caps-small",
-    component: <SekolahDetail/>, // Referensi ke komponen, bukan JSX
+    component: <SekolahDetail />,
     layout: "/admin",
     isVisible: false
   },
@@ -148,7 +128,7 @@ var routes = [
     path: "/sekolah/:namakegiatan/:namasekolah/modifikasi",
     name: "Kegiatan Sekolah",
     icon: "nc-icon nc-caps-small",
-    component: <SekolahModifikasi/>, // Referensi ke komponen, bukan JSX
+    component: <SekolahModifikasi />,
     layout: "/admin",
     isVisible: false
   },
@@ -158,15 +138,15 @@ var routes = [
     icon: "nc-icon nc-caps-small",
     component: <Lingkungan />,
     layout: "/admin",
-    isVisible: true // Ubah ini untuk konsistensi
+    isVisible: true
   },
   {
     path: "/lingkungan/:kegiatan",
     name: "Lingkungan",
     icon: "nc-icon nc-caps-small",
-    component: <LingkunganDetail />,
+    component: <LingkunganDetailAdmin />,
     layout: "/admin",
-    isVisible: false // Ubah ini untuk konsistensi
+    isVisible: false
   },
   {
     path: "/lingkungan/:kegiatan/modifikasi",
@@ -174,7 +154,7 @@ var routes = [
     icon: "nc-icon nc-caps-small",
     component: <LingkunganModifikasi />,
     layout: "/admin",
-    isVisible: false // Ubah ini untuk konsistensi
+    isVisible: false
   },
   {
     path: "/typography",
@@ -182,8 +162,8 @@ var routes = [
     icon: "nc-icon nc-caps-small",
     component: <Typography />,
     layout: "/admin",
-    isVisible: true // Ubah ini untuk konsistensi
+    isVisible: true
   },
 ];
-export default routes;
 
+export default routes;

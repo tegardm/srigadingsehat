@@ -1,10 +1,11 @@
 import React from "react";
 import { Card, Container, Row, Col, Button } from "react-bootstrap"; // Import React Bootstrap components
 import { useParams, Link } from "react-router-dom";
+import CustomNavbar from "./frontend/utils/Navbar";
 
 // Dummy data for example
 const kegiatanDetails = {
-  nama: "Posyandu Kesehatan",
+  nama: "Detail Lingkungan",
   deskripsi: `Posyandu kesehatan adalah program kesehatan rutin yang dilakukan setiap bulan di desa Srigading. 
   Kegiatan ini meliputi pemeriksaan kesehatan dasar untuk ibu dan anak, imunisasi, pemantauan gizi, serta pemeriksaan kehamilan. 
   Tujuan utama adalah untuk memantau perkembangan kesehatan masyarakat secara berkala.`,
@@ -27,6 +28,8 @@ function LingkunganDetail() {
   const kegiatan = kegiatanDetails;
 
   return (
+    <>
+    <CustomNavbar/>
     <Container className="my-5 pt-5">
       {/* Header Section */}
       <h1 className="mb-4 text-center">{kegiatan.nama}</h1>
@@ -108,6 +111,7 @@ function LingkunganDetail() {
         </Col>
       </Row>
     </Container>
+    </>
   );
 }
 
