@@ -4,6 +4,7 @@ import { auth } from "../firebase/firebase"; // Import auth dari firebase.js
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, useLocation } from "react-router-dom"; // Import useLocation untuk pesan
 import { getFirestore, doc, getDoc } from "firebase/firestore"; // Import Firestore
+import CustomNavbar from "./frontend/utils/Navbar";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -50,7 +51,9 @@ const Login = () => {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+   <>
+   <CustomNavbar/>
+   <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
       <Row className="w-100">
         <Col md={6} lg={4} className="mx-auto">
           <Card className="shadow-lg">
@@ -98,6 +101,7 @@ const Login = () => {
         </Col>
       </Row>
     </Container>
+   </>
   );
 };
 

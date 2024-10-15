@@ -16,6 +16,10 @@ const CustomNavbar = () => {
             <Nav.Link href="/kesehatan-sekolah" className="text-dark">Kesehatan Sekolah</Nav.Link>
 
             <Nav.Link href="/lingkungan" className="text-dark">Lingkungan</Nav.Link>
+            {localStorage.getItem('isLoggedIn') ? (
+              <Nav.Link href="/login" className="text-dark">{localStorage.getItem('userName')} (Admin)</Nav.Link>
+            ) : <Nav.Link href="/login" className="text-dark">Login</Nav.Link>}
+
           </Nav>
         </Navbar.Collapse>
       </Container>

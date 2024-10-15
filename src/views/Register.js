@@ -4,6 +4,7 @@ import { auth, db } from "../firebase/firebase"; // Import db dari firebase.js
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore"; // Import Firestore methods
 import { useNavigate } from "react-router-dom"; // Import useNavigate untuk redirect
+import CustomNavbar from "./frontend/utils/Navbar";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -39,7 +40,9 @@ const Register = () => {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+   <>
+   <CustomNavbar/>
+    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
       <Row className="w-100">
         <Col md={6} lg={4} className="mx-auto">
           <Card className="shadow-lg">
@@ -101,6 +104,7 @@ const Register = () => {
         </Col>
       </Row>
     </Container>
+   </>
   );
 };
 
