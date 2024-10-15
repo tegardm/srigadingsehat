@@ -4,15 +4,21 @@ import Icons from "views/Icons.js";
 import Typography from "views/Typography.js";
 import WargaList from "views/Warga";
 import PendudukList from "views/Penduduk";
+import PendudukTambah from "views/PendudukTambah";
+
 import PendudukList2 from "views/Penduduk2";
 import PendudukModifikasi from "views/PendudukModifikasi";
 import DesaKegiatan from "views/DesaKegiatan";
 import DesaModifikasi from "views/DesaModifikasi";
 import Desa from "views/Desa";
 import Sekolah from "views/Sekolah";
+import SekolahTambah from "views/SekolahTambah";
 import SekolahList from "views/SekolahList";
 import SekolahDetail from "views/SekolahDetail";
 import DesaDetailKegiatan from "views/DesaDetailKegiatan";
+import DesaTambah from "views/DesaTambah";
+import LingkunganTambah from "views/LingkunganTambah";
+
 import Lingkungan from "views/Lingkungan";
 import LingkunganDetailAdmin from "views/LingkunganDetailAdmin";
 import UserPage from "views/User.js";
@@ -49,6 +55,14 @@ var routes = [
     name: "Data Kependudukan Detail",
     icon: "nc-icon nc-tile-56",
     component: <PendudukList />,
+    layout: "/admin",
+    isVisible: false
+  },
+  {
+    path: "/penduduk/:namadusun/tambah",
+    name: "Data Kependudukan Detail",
+    icon: "nc-icon nc-tile-56",
+    component: <PendudukTambah />,
     layout: "/admin",
     isVisible: false
   },
@@ -93,6 +107,14 @@ var routes = [
     isVisible: false
   },
   {
+    path: "/desa/:namadusun/kegiatan/tambah",
+    name: "Posyandu Desa",
+    icon: "nc-icon nc-tile-56",
+    component: <DesaTambah />,
+    layout: "/admin",
+    isVisible: false
+  },
+  {
     path: "/desa/:namadusun/kegiatan/:namakegiatan/modifikasi",
     name: "Posyandu Desa",
     icon: "nc-icon nc-tile-56",
@@ -113,6 +135,14 @@ var routes = [
     name: "List Sekolah",
     icon: "nc-icon nc-caps-small",
     component: <SekolahList />,
+    layout: "/admin",
+    isVisible: false
+  },
+  {
+    path: "/sekolah/tambah",
+    name: "Tambah Sekolah",
+    icon: "nc-icon nc-caps-small",
+    component: <SekolahTambah />,
     layout: "/admin",
     isVisible: false
   },
@@ -139,6 +169,14 @@ var routes = [
     component: <Lingkungan />,
     layout: "/admin",
     isVisible: true
+  },
+  {
+    path: "/lingkungan/tambah",
+    name: "Lingkungan",
+    icon: "nc-icon nc-caps-small",
+    component: <LingkunganTambah />,
+    layout: "/admin",
+    isVisible: false
   },
   {
     path: "/lingkungan/:kegiatan",

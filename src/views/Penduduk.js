@@ -14,6 +14,11 @@ function PendudukKategori() {
   return (
     <div className="content">
       <h2>Kategori Penduduk di Dusun {namadusun}</h2>
+      <Link to={`/admin/penduduk/${namadusun}/tambah/`}>
+                  <button className="p-2 m-2 bg-success rounded-lg text-white border-0">
+                    Tambah Data
+                  </button>
+      </Link>
       <table className="table">
         <thead>
           <tr>

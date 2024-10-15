@@ -39,6 +39,9 @@ function Sekolah() {
   return (
     <div className="content">
       <h2 className="mb-4">Data Kegiatan Kesehatan Sekolah Desa Srigading</h2>
+      <Link to={`/admin/lingkungan/tambah`}>
+                    <Button variant="success" className="mr-2">Tambah Kegiatan</Button>
+                  </Link>
       {error && <p>Error: {error}</p>}
       
       <Row>

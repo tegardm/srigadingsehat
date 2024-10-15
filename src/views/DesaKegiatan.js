@@ -70,7 +70,9 @@ function DesaKegiatan() {
     <div className="content">
       <h2>Data Kegiatan Kesehatan Masyarakat Desa Srigading</h2>
       {error && <p>Error: {error}</p>}
-      
+      <Link to={`/admin/desa/${namadusun}/kegiatan/tambah`}>
+                    <Button variant="success" className="mr-2">Tambah Kegiatan</Button>
+      </Link>
       <Row>
         {kegiatanData && kegiatanData.length > 0 ? (
           kegiatanData.map((kegiatan, index) => (
