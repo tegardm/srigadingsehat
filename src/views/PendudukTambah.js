@@ -1,45 +1,85 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { app } from '../firebase/firebase'; // Make sure your Firebase configuration is imported here
+import { useParams } from 'react-router-dom'; // Import useParams to get URL parameters
 
 const PendudukTambah = () => {
+    const { namadusun } = useParams(); // Get the 'namadusun' parameter from the URL
     const [formData, setFormData] = useState({
         nama: '',
         nik: '',
         alamat: '',
         jenisKelamin: '',
         usia: '',
-        dusun: '',
+        dusun: namadusun || '', // Set initial value to 'namadusun' from URL
         kategori: ''
     });
 
+    const db = getFirestore(app); // Get Firestore instance
+
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        // Determine the category automatically based on age
+        let kategori = formData.kategori;
+        if (name === 'usia') {
+            const usia = parseInt(value, 10);
+            if (usia >= 0 && usia <= 5) {
+                kategori = 'balita';
+            } else if (usia >= 6 && usia <= 12) {
+                kategori = 'anak';
+            } else if (usia >= 13 && usia <= 17) {
+                kategori = 'remaja';
+            } else if (usia >= 18 && usia <= 59) {
+                kategori = 'dewasa';
+            } else if (usia >= 60) {
+                kategori = 'lansia';
+            } else {
+                kategori = '';
+            }
+        }
+
         setFormData({
             ...formData,
-            [name]: value
+            [name]: value,
+            kategori: kategori
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here, you can add code to submit the form data to a server or perform other actions.
-        console.log('Form Data:', formData);
-        alert('Data penduduk berhasil ditambahkan!');
-        // Clear form after submission
-        setFormData({
-            nama: '',
-            nik: '',
-            alamat: '',
-            jenisKelamin: '',
-            usia: '',
-            dusun: '',
-            kategori: ''
-        });
+        try {
+            // Add data to the 'penduduks' collection
+            await addDoc(collection(db, 'penduduks'), {
+                nama: formData.nama,
+                nik: formData.nik,
+                alamat: formData.alamat,
+                jenis_kelamin: formData.jenisKelamin,
+                usia: parseInt(formData.usia),
+                dusun: formData.dusun,
+                kategori: formData.kategori
+            });
+            alert('Data penduduk berhasil ditambahkan!');
+            // Clear the form after submission
+            setFormData({
+                nama: '',
+                nik: '',
+                alamat: '',
+                jenisKelamin: '',
+                usia: '',
+                dusun: namadusun.toLowerCase() || '', // Reset to the initial 'namadusun' value
+                kategori: ''
+            });
+        } catch (error) {
+            console.error('Error menambahkan data:', error);
+            alert('Terjadi kesalahan saat menambahkan data');
+        }
     };
 
     return (
         <div className="container mt-5">
-            <br></br><br></br>
+            <br /><br />
             <h2>Tambah Data Penduduk</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -107,25 +147,19 @@ const PendudukTambah = () => {
                         className="form-control"
                         name="dusun"
                         value={formData.dusun}
-                        onChange={handleChange}
-                        required
+                        readOnly
+                        disabled // Disable the input field to prevent editing
                     />
                 </div>
                 <div className="form-group">
-                    <label>Kategori</label>
-                    <select
+                    <label>Kategori (otomatis)</label>
+                    <input
+                        type="text"
                         className="form-control"
                         name="kategori"
                         value={formData.kategori}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Pilih Kategori</option>
-                        <option value="Balita">Balita</option>
-                        <option value="Anak-anak">Anak-anak</option>
-                        <option value="Dewasa">Dewasa</option>
-                        <option value="Lansia">Lansia</option>
-                    </select>
+                        readOnly
+                    />
                 </div>
                 <button type="submit" className="btn btn-primary">
                     Tambah Data

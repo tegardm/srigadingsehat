@@ -35,14 +35,6 @@ var routes = [
     isVisible: true
   },
   {
-    path: "/user-page",
-    name: "User Profile",
-    icon: "nc-icon nc-single-02",
-    component: <UserPage />,
-    layout: "/admin",
-    isVisible: true
-  },
-  {
     path: "/penduduk",
     name: "Data Kependudukan",
     icon: "nc-icon nc-tile-56",
@@ -75,7 +67,7 @@ var routes = [
     isVisible: false
   },
   {
-    path: "/penduduk/:namadusun/kategori/:kategori/:nik",
+    path: "/penduduk/:namadusun/kategori/:kategori/:nik/modifikasi",
     name: "Data Kependudukan Detail",
     icon: "nc-icon nc-tile-56",
     component: <PendudukModifikasi />,
@@ -193,15 +185,7 @@ var routes = [
     component: <LingkunganModifikasi />,
     layout: "/admin",
     isVisible: false
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    icon: "nc-icon nc-caps-small",
-    component: <Typography />,
-    layout: "/admin",
-    isVisible: true
-  },
+  }
 ];
 
 export default routes;

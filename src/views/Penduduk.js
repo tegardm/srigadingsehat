@@ -4,16 +4,16 @@ function PendudukKategori() {
   const { namadusun } = useParams(); // Ambil nama dusun dari URL
 
   const kategoriPenduduk = [
-    { nama: "Balita", usia: "0-5" },
-    { nama: "Anak", usia: "6-12" },
-    { nama: "Remaja", usia: "13-17" },
-    { nama: "Dewasa", usia: "18-59" },
-    { nama: "Lansia", usia: "60+" }
+    { nama: "balita", usia: "0-5" },
+    { nama: "anak", usia: "6-12" },
+    { nama: "remaja", usia: "13-17" },
+    { nama: "dewasa", usia: "18-59" },
+    { nama: "lansia", usia: "60+" }
   ];
 
   return (
     <div className="content">
-      <h2>Kategori Penduduk di Dusun {namadusun}</h2>
+      <h2>Kategori Penduduk di Dusun {namadusun.toUpperCase()}</h2>
       <Link to={`/admin/penduduk/${namadusun}/tambah/`}>
                   <button className="p-2 m-2 bg-success rounded-lg text-white border-0">
                     Tambah Data

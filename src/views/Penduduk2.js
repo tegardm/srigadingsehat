@@ -2,48 +2,77 @@ import { useEffect, useState } from "react";
 import $ from 'jquery'; // Import jQuery
 import 'datatables.net'; // Import DataTables jQuery Plugin
 import { Link, useParams } from "react-router-dom";
+import { collection, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
+import { db } from '../firebase/firebase'; // Make sure this imports your Firebase configuration
 
 function PendudukKategori2() {
   const { namadusun, kategori } = useParams(); // Get both namadusun and kategori from the URL
   const [dataWarga, setDataWarga] = useState([]);
   const [error, setError] = useState(null);
 
-  // Dummy data for residents in different dusuns
-  const wargaDesa = [
-    { nama: "Budi Santoso", nik: "1234567890123456", alamat: "Jalan Mawar No. 1", jenisKelamin: "Laki-laki", usia: 3, dusun: "Mendek", kategori: "Balita" },
-    { nama: "Siti Aminah", nik: "6543210987654321", alamat: "Jalan Melati No. 12", jenisKelamin: "Perempuan", usia: 7, dusun: "Jeruk", kategori: "Anak" },
-    { nama: "Andi Wijaya", nik: "7896541230123456", alamat: "Jalan Kenanga No. 7", jenisKelamin: "Laki-laki", usia: 15, dusun: "Krajan", kategori: "Remaja" },
-    { nama: "Dewi Lestari", nik: "3216549876543210", alamat: "Jalan Anggrek No. 5", jenisKelamin: "Perempuan", usia: 25, dusun: "Gading", kategori: "Dewasa" },
-    { nama: "Eko Prasetyo", nik: "9876543210987654", alamat: "Jalan Tulip No. 9", jenisKelamin: "Laki-laki", usia: 65, dusun: "Mendek", kategori: "Lansia" },
-    { nama: "Rina Dewi", nik: "5678901234567890", alamat: "Jalan Melati No. 10", jenisKelamin: "Perempuan", usia: 50, dusun: "Gading", kategori: "Dewasa" },
-    { nama: "Arianto", nik: "0987654321098765", alamat: "Jalan Cempaka No. 3", jenisKelamin: "Laki-laki", usia: 4, dusun: "Gading", kategori: "Balita" },
-    { nama: "Lina", nik: "1122334455667788", alamat: "Jalan Cempaka No. 5", jenisKelamin: "Perempuan", usia: 6, dusun: "Gading", kategori: "Anak" },
-  ];
-
   useEffect(() => {
-    // Simulate data fetching and filtering by 'namadusun' and 'kategori'
-    const filteredData = wargaDesa.filter((warga) => 
-        warga.dusun.toLowerCase().trim() === namadusun.toLowerCase().trim() &&
-        warga.kategori.toLowerCase().trim() === kategori.toLowerCase().trim()
-      );
-      
-      
-      console.log('namadusun:', `"${namadusun}"`, 'kategori:', `"${kategori}"`);
-      console.log(filteredData);
-    setDataWarga(filteredData);
-  }, [namadusun, kategori]); // Ensure both params trigger data fetching
-
+    const fetchDusunData = async () => {
+      try {
+        // Log the parameters to check if they are being received correctly
+        console.log('Fetching data for dusun:', namadusun, 'kategori:', kategori);
+  
+        // Create a query to filter data by 'dusun' and 'kategori'
+        const dusunQuery = query(
+          collection(db, "penduduks"),
+          where("dusun", "==", namadusun),
+          where("kategori", "==", kategori)
+        );
+        
+        // Fetch the filtered data
+        const querySnapshot = await getDocs(dusunQuery);
+        const data = querySnapshot.docs.map((doc) => ({
+          id: doc.id, // Save the document ID for deletion
+          ...doc.data()
+        }));
+  
+        // Log the fetched data to check if any data is retrieved
+        console.log('Data fetched:', data);
+        
+        setDataWarga(data); // Update the state with the filtered data
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching dusun data: ", err);
+      }
+    };
+  
+    fetchDusunData(); // Call the fetch function
+  }, [namadusun, kategori]); // Refetch data if these parameters change
+  
   // Initialize DataTables after data is loaded
   useEffect(() => {
     if (dataWarga.length > 0) {
       const table = $('#pendudukTable').DataTable(); // Initialize DataTable
-        console.log('ada kok data warga')
+      
       return () => {
         // Destroy DataTable before component unmount or re-render
         table.destroy();
       };
     }
   }, [dataWarga]);
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm('Apakah Anda yakin ingin menghapus data penduduk ini?');
+    if (!confirmDelete) return; // Exit if user does not confirm
+
+    try {
+      // Delete the document from Firestore
+      const pendudukRef = doc(db, 'penduduks', id);
+      await deleteDoc(pendudukRef);
+
+      // Remove the deleted record from the state to update the table
+      setDataWarga(dataWarga.filter((warga) => warga.id !== id));
+
+      alert('Data penduduk berhasil dihapus!');
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+      alert('Terjadi kesalahan saat menghapus data penduduk.');
+    }
+  };
 
   return (
     <div className="content">
@@ -76,16 +105,21 @@ function PendudukKategori2() {
                 <td>{warga.dusun}</td>
                 <td>{warga.kategori}</td>
                 <td>
-                <Link to={`/admin/penduduk/${namadusun}/kategori/${kategori}/${warga.nik}`}>
+                  <Link to={`/admin/penduduk/${namadusun}/kategori/${kategori}/${warga.nik}/modifikasi`}>
                     <button className="p-2 m-2 bg-success rounded-lg text-white border-0">Modifikasi</button>
                   </Link>
-                  <button className="p-2 m-2 bg-warning rounded-lg text-white border-0">Delete</button>
+                  <button
+                    className="p-2 m-2 bg-warning rounded-lg text-white border-0"
+                    onClick={() => handleDelete(warga.id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="7">Tidak ada data untuk dusun ini.</td>
+              <td colSpan="8">Tidak ada data untuk dusun ini.</td>
             </tr>
           )}
         </tbody>
