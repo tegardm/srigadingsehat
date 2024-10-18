@@ -5,7 +5,12 @@ import Typography from "views/Typography.js";
 import WargaList from "views/Warga";
 import PendudukList from "views/Penduduk";
 import PendudukTambah from "views/PendudukTambah";
+import Fasilitas from "views/Fasilitas";
+import FasilitasTambah from "views/FasilitasTambah";
 
+import FasilitasDetail from "views/FasilitasDetail";
+import FasilitasModifikasi from "views/FasilitasModifikasi";
+import DusunModifikasi from "views/DusunModiikasi";
 import PendudukList2 from "views/Penduduk2";
 import PendudukModifikasi from "views/PendudukModifikasi";
 import DesaKegiatan from "views/DesaKegiatan";
@@ -41,6 +46,38 @@ var routes = [
     component: <WargaList />,
     layout: "/admin",
     isVisible: true
+  },
+  {
+    path: "/fasilitas",
+    name: "Fasilitas Kesehatan",
+    icon: "nc-icon nc-tile-56",
+    component: <Fasilitas />,
+    layout: "/admin",
+    isVisible: true
+  },
+  {
+    path: "/fasilitas/tambah",
+    name: "Fasilitas Kesehatan",
+    icon: "nc-icon nc-tile-56",
+    component: <FasilitasTambah />,
+    layout: "/admin",
+    isVisible: false
+  },
+  {
+    path: "/fasilitas/:namafasilitas",
+    name: "Fasilitas Kesehatan",
+    icon: "nc-icon nc-tile-56",
+    component: <FasilitasDetail />,
+    layout: "/admin",
+    isVisible: false
+  },
+  {
+    path: "/fasilitas/:namafasilitas/modifikasi",
+    name: "Modifikasi Fasilitas Kesehatan",
+    icon: "nc-icon nc-tile-56",
+    component: <FasilitasModifikasi />,
+    layout: "/admin",
+    isVisible: false
   },
   {
     path: "/penduduk/:namadusun",
@@ -87,6 +124,14 @@ var routes = [
     name: "Posyandu Desa",
     icon: "nc-icon nc-tile-56",
     component: <DesaKegiatan />,
+    layout: "/admin",
+    isVisible: false
+  },
+  {
+    path: "/desa/:namadusun/modifikasi",
+    name: "Posyandu Desa",
+    icon: "nc-icon nc-tile-56",
+    component: <DusunModifikasi />,
     layout: "/admin",
     isVisible: false
   },

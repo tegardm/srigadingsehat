@@ -11,11 +11,6 @@ function DesaKegiatan() {
   // Data Kegiatan Kesehatan dengan Thumbnail Dummy Statis
   const kegiatanKesehatan = [
     {
-      nama: "Posyandu Kesehatan",
-      deskripsi: "Layanan kesehatan rutin untuk ibu dan anak.",
-      slug: "posyandu-kesehatan",
-    },
-    {
       nama: "Pemeriksaan Dasar (Krening Kesehatan)",
       deskripsi: "Pemeriksaan dasar untuk deteksi awal penyakit.",
       slug: "pemeriksaan-dasar-krening-kesehatan",
@@ -79,7 +74,7 @@ function DesaKegiatan() {
             <Col md={4} key={index} className="mb-4">
               <Card>
                 {/* Thumbnail Dummy Statis */}
-                <Card.Img variant="top" src={dummyImage} alt="Kegiatan Kesehatan" />
+                {/* <Card.Img variant="top" src={dummyImage} alt="Kegiatan Kesehatan" /> */}
 
                 <Card.Body>
                   <Card.Title>{kegiatan.nama ? kegiatan.nama : "Nama kegiatan tidak diketahui"}</Card.Title>

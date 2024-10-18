@@ -2,6 +2,10 @@ import React from 'react';
 import { Navbar, Nav, Container, Button, Row, Col } from 'react-bootstrap';
 import CustomNavbar from './utils/Navbar'; // Import komponen Navbar
 const LandingPage = () => {
+
+    // Fetch data from Firestore
+ 
+
   return (
     <div>
       {/* Header */}

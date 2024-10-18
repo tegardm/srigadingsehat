@@ -54,7 +54,7 @@ function Sekolah() {
             <Col md={6} key={index} className="mb-4">
               <Card>
                 {/* Thumbnail Dummy Statis */}
-                <Card.Img variant="top" src={dummyImage} alt="Kegiatan Kesehatan Sekolah" />
+                {/* <Card.Img variant="top" src={dummyImage} alt="Kegiatan Kesehatan Sekolah" /> */}
 
                 <Card.Body>
                   <Card.Title>{kegiatan.nama ? kegiatan.nama : "Nama kegiatan tidak diketahui"}</Card.Title>

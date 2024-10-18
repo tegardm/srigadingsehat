@@ -37,7 +37,7 @@ function Desa() {
                 {/* Thumbnail Section */}
                 <Card.Img
                   variant="top"
-                  src="https://via.placeholder.com/350x200?text=Desa+Srigading"
+                  src={dusun.gambar ? dusun.gambar : "https://via.placeholder.com/350x200?text=Desa+Srigading"}
                   alt="Thumbnail"
                   style={{ height: "200px", objectFit: "cover" }}
                 />
@@ -53,6 +53,9 @@ function Desa() {
                   <div className="text-center">
                     <Link to={`/admin/penduduk/${dusun.nama}`}>
                       <Button variant="success" className="btn-block">Lihat Kegiatan</Button>
+                    </Link>
+                    <Link to={`/admin/desa/${dusun.nama}/modifikasi`}>
+                      <Button variant="warning" className="btn-block">Modifikasi Desa</Button>
                     </Link>
                   </div>
                 </Card.Body>
