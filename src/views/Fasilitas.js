@@ -126,8 +126,10 @@ console.log('Filtered fasilitasList:', filteredFasilitas);
           <Card.Text><strong>Alamat:</strong> {fasilitas.alamat || 'Tidak ada alamat yang tersedia'}</Card.Text>
           <Card.Text><strong>Deskripsi:</strong> {truncateDescription(fasilitas.deskripsi, 20)}</Card.Text>
         
-          <Link to={`/admin/fasilitas/${fasilitas.slug}`}><Button variant="info" className="mr-2">Lihat Detail</Button></Link>
-          <Link to={`/admin/fasilitas/${fasilitas.slug}/modifikasi`}><Button variant="warning">Modifikasi</Button></Link>
+          <Link to={`/admin/fasilitas/${fasilitas.id}`}><Button variant="info" className="mr-2">Lihat Detail</Button></Link>
+          <Link to={`/admin/fasilitas/${fasilitas.id}/modifikasi`}>
+              <Button variant="warning">Modifikasi</Button>
+          </Link>
         </Card.Body>
       </Card>
     </Col>

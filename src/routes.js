@@ -64,7 +64,7 @@ var routes = [
     isVisible: false
   },
   {
-    path: "/fasilitas/:namafasilitas",
+    path: "/fasilitas/:idFasilitas",
     name: "Fasilitas Kesehatan",
     icon: "nc-icon nc-tile-56",
     component: <FasilitasDetail />,
@@ -72,7 +72,7 @@ var routes = [
     isVisible: false
   },
   {
-    path: "/fasilitas/:namafasilitas/modifikasi",
+    path: "/fasilitas/:idFasilitas/modifikasi",
     name: "Modifikasi Fasilitas Kesehatan",
     icon: "nc-icon nc-tile-56",
     component: <FasilitasModifikasi />,
