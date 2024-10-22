@@ -1,81 +1,101 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Card, Row, Col, Button, Form } from "react-bootstrap"; // Import React Bootstrap components
+import { Card, Row, Col, Button, Form, Alert } from "react-bootstrap";
+import { db } from "../firebase/firebase";
+import { doc, getDoc } from "firebase/firestore"; // Import Firestore functions
 
 function SekolahList() {
-  const [sekolahData, setSekolahData] = useState ([
-    {
-      nama: "SDN 1 Srigading",
-      deskripsi: "Sekolah dasar negeri yang terletak di pusat Desa Srigading.",
-      slug: "sdn-1-srigading"
-    },
-    {
-      nama: "SDN 2 Srigading",
-      deskripsi: "Sekolah dasar negeri dengan fasilitas yang lengkap dan guru berkualitas.",
-      slug: "sdn-2-srigading"
-    },
-    {
-      nama: "SDN 3 Srigading",
-      deskripsi: "Sekolah dasar yang terkenal dengan program literasi dan lingkungan hijau.",
-      slug: "sdn-3-srigading"
-    },
-    {
-      nama: "SMP 1 Lawang, Atap",
-      deskripsi: "Sekolah dasar yang terkenal dengan program literasi dan lingkungan hijau.",
-      slug: "smp-1-lawang-atap"
-    }
-  ]);
-  const [searchTerm, setSearchTerm] = useState(""); // State untuk pencarian
+  const [sekolahData, setSekolahData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [error, setError] = useState(null);
-  // Data Sekolah dengan Thumbnail Dummy Statis
- 
+  const { idkegiatan, namakegiatan } = useParams(); // Use params from URL
   
+  // Fetch data from Firestore
+  useEffect(() => {
+    const fetchKegiatan = async () => {
+      try {
+        // Mendapatkan referensi ke dokumen kegiatan berdasarkan idkegiatan
+        const kegiatanRef = doc(db, "kegiatansekolahs", idkegiatan);
+        // Mendapatkan dokumen kegiatan
+        const kegiatanSnapshot = await getDoc(kegiatanRef);
 
-  const dummyImage = "https://via.placeholder.com/300x200?text=Sekolah+Srigading"; // Gambar dummy statis
+        if (kegiatanSnapshot.exists()) {
+          const kegiatanData = { id: kegiatanSnapshot.id, ...kegiatanSnapshot.data() };
 
+          // Jika terdapat properti 'sekolah' dalam data kegiatan
+          if (kegiatanData.sekolah) {
+            const sekolahList = kegiatanData.sekolah.map((sekolah) => ({
+              id: sekolah.id, // atau sesuaikan dengan struktur data yang ada
+              ...sekolah,
+            }));
+            setSekolahData(sekolahList);
+          } else {
+            setSekolahData([]); // Jika tidak ada data sekolah
+          }
+        } else {
+          setError("Kegiatan tidak ditemukan.");
+        }
+      } catch (err) {
+        setError("Failed to load data. Please try again.");
+        console.error(err);
+      }
+    };
 
-  // Filter data sekolah berdasarkan input pencarian
+    fetchKegiatan();
+  }, [idkegiatan]); // Rerun the effect when idkegiatan changes
+
+  // Filter data based on search input
   const filteredSekolahData = sekolahData.filter((sekolah) =>
     sekolah.nama.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const {namakegiatan} = useParams()
-  console.log(useParams()); // Cek apakah parameternya sudah sesuai
-  
 
   return (
     <div className="content">
-      <h2>Data Sekolah Dasar Negeri di Desa Srigading</h2>
-      {error && <p>Error: {error}</p>}
+      <h2>Data Sekolah untuk Kegiatan: {namakegiatan}</h2>
+      <Link to={`/admin/sekolah/${idkegiatan}/tambah-sekolah`}>
+        <Button variant="success" className="btn-block">
+          Tambah Sekolah
+        </Button>
+      </Link>
+      
+      {/* Display error message */}
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      {/* Input untuk pencarian sekolah */}
+      {/* Search input */}
       <Form.Group controlId="search">
         <Form.Control
           type="text"
           placeholder="Cari Sekolah..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Update state searchTerm saat ada perubahan input
+          onChange={(e) => setSearchTerm(e.target.value)} // Update search term on input change
         />
       </Form.Group>
-        <br></br>
+      <br />
       <Row>
-        {filteredSekolahData && filteredSekolahData.length > 0 ? (
-          filteredSekolahData.map((sekolah, index) => (
-            <Col md={4} key={index} className="mb-4">
+        {filteredSekolahData.length > 0 ? (
+          filteredSekolahData.map((sekolah) => (
+            <Col md={4} key={sekolah.id} className="mb-4">
               <Card>
-                {/* Thumbnail Dummy Statis */}
-                <Card.Img variant="top" src={dummyImage} alt="Sekolah Srigading" />
+                {/* Display thumbnail if available, otherwise use a placeholder */}
+                <Card.Img
+                  variant="top"
+                  src={sekolah.thumbnail || "https://via.placeholder.com/300x200?text=Sekolah+Srigading"}
+                  alt={sekolah.nama}  style={{ width: '500px', height: '250px', objectFit: 'cover' }}
 
+                />
                 <Card.Body>
-                  <Card.Title>{sekolah.nama ? sekolah.nama : "Nama sekolah tidak diketahui"}</Card.Title>
-                  <Card.Text>
-                    {sekolah.deskripsi ? sekolah.deskripsi : "Deskripsi tidak tersedia"}
-                  </Card.Text>
-                  <Link to={`/admin/sekolah/${namakegiatan}/${sekolah.slug}`}>
-                    <Button variant="success" className="mr-2">Lihat Sekolah</Button>
-                    </Link>
-                    <Link to={`/admin/sekolah/${namakegiatan}/${sekolah.slug}/modifikasi`}>
-                    <Button variant="warning" className="mr-2">Modifikasi</Button>
-                    </Link>
+                  <Card.Title>{sekolah.nama || "Nama sekolah tidak diketahui"}</Card.Title>
+                  <Card.Text>{sekolah.kegiatan.description || "Deskripsi tidak tersedia"}</Card.Text>
+                  <Link to={`/admin/sekolah/${namakegiatan}/${sekolah.id}`}>
+                    <Button variant="success" className="mr-2">
+                      Lihat Kegiatan
+                    </Button>
+                  </Link>
+                  <Link to={`/admin/sekolah/${namakegiatan}/${sekolah.id}/modifikasi`}>
+                    <Button variant="warning" className="mr-2">
+                      Modifikasi
+                    </Button>
+                  </Link>
                 </Card.Body>
               </Card>
             </Col>

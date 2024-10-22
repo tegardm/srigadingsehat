@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, ProgressBar, Card } from 'react-bootstrap';
-import { collection, addDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage, db } from '../firebase/firebase';
+import { collection, addDoc } from 'firebase/firestore'; // Import Firestore functions
+import { useNavigate } from 'react-router-dom';
 
-const DesaTambah = () => {
+const SekolahTambah = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -13,6 +15,8 @@ const DesaTambah = () => {
     const [uploadProgress, setUploadProgress] = useState(0);
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -32,10 +36,13 @@ const DesaTambah = () => {
         e.preventDefault();
         setIsSubmitting(true);
         setError(null);
-
+    
+        const storage = getStorage(); // Mendapatkan instance dari Firebase Storage
+    
         if (thumbnailFile) {
-            const uploadTask = storage.ref(`thumbnails/${thumbnailFile.name}`).put(thumbnailFile);
-
+            const storageRef = ref(storage, `thumbnails/${thumbnailFile.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, thumbnailFile);
+    
             uploadTask.on(
                 'state_changed',
                 (snapshot) => {
@@ -49,17 +56,16 @@ const DesaTambah = () => {
                 },
                 async () => {
                     try {
-                        const url = await storage
-                            .ref('thumbnails')
-                            .child(thumbnailFile.name)
-                            .getDownloadURL();
-
-                        await addDoc(collection(db, 'kesehatan'), {
+                        const url = await getDownloadURL(uploadTask.snapshot.ref);
+                        
+                        // Menyimpan data ke Firestore
+                        await addDoc(collection(db, 'kegiatansekolahs'), {
                             ...formData,
                             thumbnail: url,
                         });
-
+    
                         alert('Data successfully submitted!');
+                        
                         setFormData({
                             title: '',
                             description: '',
@@ -67,6 +73,7 @@ const DesaTambah = () => {
                         });
                         setThumbnailFile(null);
                         setUploadProgress(0);
+                        navigate.back(-1)
                     } catch (err) {
                         console.error('Error saving to Firestore:', err);
                         setError('Failed to save data. Please try again.');
@@ -80,20 +87,22 @@ const DesaTambah = () => {
             setIsSubmitting(false);
         }
     };
+    
 
     return (
         <>
         <br /><br /><br />
         <Container className="mt-4">
             <Card className="p-4 shadow-sm">
-                <h4 className="text-center mb-4">Tambah Informasi Kegiatan Kesehatan Sekolah</h4>
+                <h4 className="text-center mb-4">Tambah Informasi Kegiatan Kesehatan Sekolah Srigading</h4>
                 {error && <p className="text-danger text-center">{error}</p>}
                 <Form onSubmit={handleSubmit}>
+                    {/* Input for Title */}
                     <Form.Group controlId="formTitle">
-                        <Form.Label>Title</Form.Label>
+                        <Form.Label>Judul Kegiatan</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Enter title"
+                            placeholder="Masukkan Judul Kegiatan"
                             name="title"
                             value={formData.title}
                             onChange={handleChange}
@@ -102,12 +111,13 @@ const DesaTambah = () => {
                     </Form.Group>
                     <br />
 
+                    {/* Input for Description */}
                     <Form.Group controlId="formDescription">
-                        <Form.Label>Description</Form.Label>
+                        <Form.Label>Deskripsi Kegiatan</Form.Label>
                         <Form.Control
                             as="textarea"
                             rows={4}
-                            placeholder="Enter description"
+                            placeholder="Masukkan Deskripsi Kegiatan"
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
@@ -116,6 +126,7 @@ const DesaTambah = () => {
                     </Form.Group>
                     <br />
 
+                     {/* Input for Thumbnail */}
                     <Form.Group controlId="formThumbnail">
                         <Form.Label>Thumbnail</Form.Label>
                         <Form.Control
@@ -133,6 +144,7 @@ const DesaTambah = () => {
                     </Form.Group>
                     <br />
 
+                    {/* Submit Button */}
                     <Button
                         variant="primary"
                         type="submit"
@@ -148,4 +160,4 @@ const DesaTambah = () => {
     );
 };
 
-export default DesaTambah;
+export default SekolahTambah;

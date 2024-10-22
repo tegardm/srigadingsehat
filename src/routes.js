@@ -7,7 +7,7 @@ import PendudukList from "views/Penduduk";
 import PendudukTambah from "views/PendudukTambah";
 import Fasilitas from "views/Fasilitas";
 import FasilitasTambah from "views/FasilitasTambah";
-
+import SekolahListTambah from "views/SekolahListTambah";
 import FasilitasDetail from "views/FasilitasDetail";
 import FasilitasModifikasi from "views/FasilitasModifikasi";
 import DusunModifikasi from "views/DusunModiikasi";
@@ -136,7 +136,7 @@ var routes = [
     isVisible: false
   },
   {
-    path: "/desa/:namadusun/kegiatan/:namakegiatan",
+    path: "/desa/:namadusun/kegiatan/:idkegiatan",
     name: "Posyandu Desa",
     icon: "nc-icon nc-tile-56",
     component: <DesaDetailKegiatan />,
@@ -152,7 +152,7 @@ var routes = [
     isVisible: false
   },
   {
-    path: "/desa/:namadusun/kegiatan/:namakegiatan/modifikasi",
+    path: "/desa/:namadusun/kegiatan/:idkegiatan/modifikasi",
     name: "Posyandu Desa",
     icon: "nc-icon nc-tile-56",
     component: <DesaModifikasi />,
@@ -168,10 +168,18 @@ var routes = [
     isVisible: true
   },
   {
-    path: "/sekolah/:namakegiatan",
+    path: "/sekolah/:idkegiatan",
     name: "List Sekolah",
     icon: "nc-icon nc-caps-small",
     component: <SekolahList />,
+    layout: "/admin",
+    isVisible: false
+  },
+  {
+    path: "/sekolah/:idkegiatan/tambah-sekolah",
+    name: "List Sekolah",
+    icon: "nc-icon nc-caps-small",
+    component: <SekolahListTambah />,
     layout: "/admin",
     isVisible: false
   },

@@ -18,6 +18,7 @@ const DesaTambah = () => {
         },
         dusun : `${namadusun}`,
         locationAddress: '',
+        locationGmaps : '',
         thumbnail: '',
     });
     const [thumbnailFile, setThumbnailFile] = useState(null);
@@ -94,6 +95,7 @@ const DesaTambah = () => {
                             },
                             dusun: '',
                             locationAddress: '',
+                            locationGmaps : '',
                             thumbnail: '',
                         });
                         setThumbnailFile(null);
@@ -212,6 +214,20 @@ const DesaTambah = () => {
                             placeholder="Masukkan alamat lokasi"
                             name="locationAddress"
                             value={formData.locationAddress}
+                            onChange={handleChange}
+                            required
+                        />
+                    </Form.Group>
+                    <br/>
+                    <Form.Group controlId="formLocationAddressGmaps">
+                        <Form.Label>URL Lokasi Google Maps</Form.Label>
+                        <br/>
+                        <a href=''><small>Bagaimana Cara Mendapatkan URL Gmaps ?</small></a>
+                        <Form.Control
+                            type="text"
+                            placeholder="Masukkan URL GMaps"
+                            name="locationGmaps"
+                            value={formData.locationGmaps}
                             onChange={handleChange}
                             required
                         />

@@ -8,50 +8,21 @@ function DesaKegiatan() {
   const [kegiatanData, setKegiatanData] = useState([]);
   const [error, setError] = useState(null);
 
-  // Data Kegiatan Kesehatan dengan Thumbnail Dummy Statis
-  const kegiatanKesehatan = [
-    {
-      nama: "Pemeriksaan Dasar (Krening Kesehatan)",
-      deskripsi: "Pemeriksaan dasar untuk deteksi awal penyakit.",
-      slug: "pemeriksaan-dasar-krening-kesehatan",
-    },
-    {
-      nama: "Pemeriksaan Dasar (Pemeriksaan Kehamilan)",
-      deskripsi: "Pemeriksaan kesehatan ibu hamil.",
-      slug: "pemeriksaan-dasar-pemeriksaan-kehamilan",
-    },
-    {
-      nama: "Imunisasi Dasar",
-      deskripsi: "Imunisasi untuk anak-anak dan ibu hamil.",
-      slug: "imunisasi-dasar",
-    },
-    {
-      nama: "Pemantauan Gizi Anak",
-      deskripsi: "Pemantauan perkembangan gizi anak-anak.",
-      slug: "pemantauan-gizi-anak",
-    },
-    {
-      nama: "Stunting",
-      deskripsi: "Program pencegahan dan penanganan stunting.",
-      slug: "stunting",
-    },
-    {
-      nama: "DDTK",
-      deskripsi: "Deteksi dini tumbuh kembang anak.",
-      slug: "ddtk",
-    },
-  ];
-  
-
-  const {namadusun} = useParams()
-
-  const dummyImage = "https://via.placeholder.com/300x200?text=Kegiatan+Kesehatan"; // Gambar dummy statis
+  const { namadusun } = useParams();
 
   useEffect(() => {
-    // Simulasi pengambilan data dari Firestore
+    // Fetch data from Firestore collection "kesehatans" and filter by "namadusun"
     const fetchKegiatanData = async () => {
       try {
-        setKegiatanData(kegiatanKesehatan);
+        const querySnapshot = await getDocs(collection(db, "kesehatans"));
+        const data = querySnapshot.docs
+          .map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }))
+          .filter(kegiatan => kegiatan.dusun === namadusun); // Filter by dusun
+
+        setKegiatanData(data);
       } catch (err) {
         setError(err.message);
         console.error("Error fetching kegiatan data: ", err);
@@ -59,32 +30,35 @@ function DesaKegiatan() {
     };
 
     fetchKegiatanData();
-  }, []);
+  }, [namadusun]);
 
   return (
     <div className="content">
       <h2>Data Kegiatan Kesehatan Masyarakat Desa Srigading</h2>
       {error && <p>Error: {error}</p>}
       <Link to={`/admin/desa/${namadusun}/kegiatan/tambah`}>
-                    <Button variant="success" className="mr-2">Tambah Kegiatan</Button>
+        <Button variant="success" className="mr-2">Tambah Kegiatan</Button>
       </Link>
       <Row>
         {kegiatanData && kegiatanData.length > 0 ? (
           kegiatanData.map((kegiatan, index) => (
             <Col md={4} key={index} className="mb-4">
               <Card>
-                {/* Thumbnail Dummy Statis */}
-                {/* <Card.Img variant="top" src={dummyImage} alt="Kegiatan Kesehatan" /> */}
-
+                <Card.Img
+                  variant="top"
+                  src={kegiatan.thumbnail ? kegiatan.thumbnail : "https://via.placeholder.com/300x200?text=Kegiatan+Kesehatan"}
+                  alt="Kegiatan Kesehatan"
+                  style={{ width: '500px', height: '250px', objectFit: 'cover' }}
+                />
                 <Card.Body>
-                  <Card.Title>{kegiatan.nama ? kegiatan.nama : "Nama kegiatan tidak diketahui"}</Card.Title>
+                  <Card.Title>{kegiatan.title ? kegiatan.title : "Nama kegiatan tidak diketahui"}</Card.Title>
                   <Card.Text>
-                    {kegiatan.deskripsi ? kegiatan.deskripsi : "Deskripsi tidak tersedia"}
+                    {kegiatan.description ? kegiatan.description : "Deskripsi tidak tersedia"}
                   </Card.Text>
-                  <Link to={`/admin/desa/${namadusun}/kegiatan/${kegiatan.slug}`}>
+                  <Link to={`/admin/desa/${namadusun}/kegiatan/${kegiatan.id}`}>
                     <Button variant="success" className="mr-2">Lihat Kegiatan</Button>
                   </Link>
-                  <Link to={`/admin/desa/${namadusun}/kegiatan/${kegiatan.slug}/modifikasi`}>
+                  <Link to={`/admin/desa/${namadusun}/kegiatan/${kegiatan.id}/modifikasi`}>
                     <Button variant="warning" className="mr-2">Modifikasi</Button>
                   </Link>
                 </Card.Body>
