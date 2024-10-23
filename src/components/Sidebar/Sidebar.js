@@ -51,7 +51,7 @@ function Sidebar(props) {
         >
           <div className="logo-img">
             <img
-              src='https://cdn.discordapp.com/attachments/1169305806651535505/1292087910673285211/LOGO_KKN_SRIGADING.png?ex=67027623&is=670124a3&hm=89540913a06e0d092fb2cb0aec25e3a9a6920c039ddb67f09fc310972f864ca5&'
+              src='https://firebasestorage.googleapis.com/v0/b/srigadingsehat.appspot.com/o/thumbnails%2FLOGO%20KKN%20SRIGADING.png?alt=media&token=01d7b9ca-b16d-4006-9dd5-a874e9626315'
               alt="react-logo"
             />
           </div>
