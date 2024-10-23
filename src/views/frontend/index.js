@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Container, Button, Row, Col } from 'react-bootstrap';
 import CustomNavbar from './utils/Navbar'; // Import komponen Navbar
+import Footer from 'components/Footer/Footer';
 const LandingPage = () => {
 
     // Fetch data from Firestore
@@ -37,7 +38,14 @@ const LandingPage = () => {
         {/* Background Gradien */}
         <div className="hero-background"></div>
       </section>
+      <div className='my-5 w-75 mx-auto text-center'>
+      <h3><strong>Tentang SrigadingSehat</strong></h3>
+      <p>SrigadingSehat adalah sebuah platform digital yang bertujuan untuk mendukung dan memfasilitasi kegiatan kesehatan serta kebersihan lingkungan di desa Srigading. Melalui situs ini, pengguna dapat mengakses informasi mengenai berbagai kegiatan sosial, seperti gotong royong, pemeriksaan kesehatan, serta inisiatif lingkungan lainnya yang berfokus pada peningkatan kesejahteraan masyarakat. Selain itu, SrigadingSehat menyediakan fitur-fitur untuk memudahkan koordinasi dan partisipasi warga dalam acara-acara yang berhubungan dengan kesehatan dan kebersihan desa.</p>
+      </div>
+      
+     <hr></hr>
 
+      <Footer/>
       {/* Custom CSS */}
       <style jsx="true">{`
         .hero-section {

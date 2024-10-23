@@ -20,6 +20,8 @@ import KesehatanSekolah from "views/frontend/KesehatanSekolah";
 import DetailKesehatanSekolah from "views/frontend/KesehatanSekolahDetail";
 import LingkunganDesa from "views/frontend/Lingkungan";
 import LingkunganDetail from "views/frontend/LingkunganDetail";
+import Fasilitas from "views/frontend/Fasilitas";
+import FasilitasDetail from "views/frontend/FasilitasDetail";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -41,12 +43,15 @@ root.render(
       {/* Redirect root ke homepage */}
       <Route path="/" element={<Home />} />
       <Route path="/penduduk" element={<Masyarakat />} />
+      <Route path="/fasilitas" element={<Fasilitas />} />
+      <Route path="/fasilitas/:idfasilitas" element={<FasilitasDetail />} />
+
       <Route path="/lingkungan" element={<LingkunganDesa />} />
-      <Route path="/lingkungan/:dusun/:kegiatan" element={<LingkunganDetail />} />
+      <Route path="/lingkungan/:idlingkungan" element={<LingkunganDetail />} />
       <Route path="/kesehatan" element={<Kesehatan />} />
-      <Route path="/kesehatan/:dusun/:kegiatan" element={<DetailKesehatan />} />
+      <Route path="/kesehatan/:namadusun/:idkegiatan" element={<DetailKesehatan />} />
       <Route path="/kesehatan-sekolah" element={<KesehatanSekolah />} />
-      <Route path="/kesehatan-sekolah/:sekolah/:kegiatan" element={<DetailKesehatanSekolah />} />
+      <Route path="/kesehatan-sekolah/:idsekolah" element={<DetailKesehatanSekolah />} />
 
       {/* Halaman login dan register */}
       <Route path="/login" element={<Login />} />

@@ -1,69 +1,98 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Container, Row, Col, Button } from "react-bootstrap";
 import { useParams, Link } from "react-router-dom";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from '../../firebase/firebase'; // Firestore instance
 import CustomNavbar from "./utils/Navbar";
-
-// Dummy data for example
-const kegiatanSekolahDetails = {
-  nama: "Skrining Kesehatan Sekolah",
-  deskripsi: `Skrining Kesehatan Sekolah adalah program kesehatan rutin yang dilakukan di sekolah-sekolah di desa Srigading.
-  Kegiatan ini meliputi pemeriksaan kesehatan dasar untuk siswa seperti pemeriksaan gigi, pengukuran berat badan, dan tinggi badan.
-  Tujuan utama adalah untuk memantau kesehatan siswa secara berkala dan mendeteksi dini masalah kesehatan.`,
-  jadwal: "Setiap Hari Rabu, pukul 09:00 - 12:00 WIB",
-  kontak: {
-    nama: "Ibu Sari",
-    nomor: "628987654321"
-  },
-  alamat: "SDN 1 Srigading, Jl. Pendidikan No. 5",
-  mapsLink: "https://www.openstreetmap.org/export/embed.html?bbox=110.387857,-7.813249,110.407857,-7.793249&layer=mapnik&marker=-7.803249,110.397857",
-  thumbnail: "https://via.placeholder.com/1200x400?text=Kegiatan+Skrining+Kesehatan+Sekolah",
-  infoTambahan: `Kegiatan ini dilaksanakan oleh tim kesehatan desa dengan bantuan dari guru dan tenaga kesehatan sekolah. 
-  Siswa diminta untuk membawa kartu identitas siswa dan buku kesehatan bila ada.`,
-};
+import Footer from 'components/Footer/Footer';
 
 function DetailKesehatanSekolah() {
-  const { kegiatanNama } = useParams();
+  const { idsekolah } = useParams(); // Dapatkan idsekolah dari URL
+  const [sekolahData, setSekolahData] = useState(null); // Data sekolah
+  const [kegiatanData, setKegiatanData] = useState(null); // Data kegiatan (hanya nama)
+  const [loading, setLoading] = useState(true);
 
-  const kegiatan = kegiatanSekolahDetails;
+  useEffect(() => {
+    const fetchSekolahData = async () => {
+      try {
+        // Ambil data sekolah berdasarkan idsekolah
+        const sekolahDocRef = doc(db, "sekolahs", idsekolah);
+        const sekolahDocSnap = await getDoc(sekolahDocRef);
+
+        if (sekolahDocSnap.exists()) {
+          const sekolah = sekolahDocSnap.data();
+          setSekolahData(sekolah);
+
+          // Setelah mendapatkan data sekolah, ambil data kegiatan berdasarkan idkegiatan
+          const kegiatanDocRef = doc(db, "kegiatansekolahs", sekolah.idkegiatan);
+          const kegiatanDocSnap = await getDoc(kegiatanDocRef);
+
+          if (kegiatanDocSnap.exists()) {
+            setKegiatanData(kegiatanDocSnap.data().title); // Ambil nama kegiatan saja
+          } else {
+            console.error("Kegiatan tidak ditemukan!");
+          }
+        } else {
+          console.error("Sekolah tidak ditemukan!");
+        }
+      } catch (error) {
+        console.error("Error fetching document:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSekolahData();
+  }, [idsekolah]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!sekolahData) {
+    return <div>Data sekolah tidak ditemukan!</div>;
+  }
 
   return (
     <>
       <CustomNavbar />
       <Container className="my-5 pt-5">
-        <h2 className="mb-4 text-center">{kegiatan.nama}</h2>
+        {/* Menampilkan detail sekolah */}
+        <h3 className="font-bold text-bold mb-4 text-center"><strong>Informasi Kegiatan {kegiatanData} di {sekolahData.nama}</strong></h3>
 
         <Card className="mb-4">
           <Card.Img
             variant="top"
-            src={kegiatan.thumbnail}
-            alt={`Thumbnail for ${kegiatan.nama}`}
+            style={{ height: "400px", objectFit: "cover" }}
+            src={sekolahData.kegiatan.thumbnail}
+            alt={`Thumbnail for ${sekolahData.nama}`}
           />
         </Card>
 
         <Row>
           <Col md={8} className="mx-auto">
             <section className="mb-4">
+         
               <h5>Deskripsi</h5>
-              <p>{kegiatan.deskripsi}</p>
-              <p><strong>Jadwal:</strong> <br /> {kegiatan.jadwal}</p>
-              <p><strong>Lokasi:</strong> <br /> {kegiatan.alamat}</p>
-              <p><strong>Informasi Tambahan:</strong> <br /> {kegiatan.infoTambahan}</p>
+              <p>{sekolahData.kegiatan?.description || "Tidak ada deskripsi tersedia."}</p>
+              <p><strong>Alamat:</strong> <br /> {sekolahData.alamat}</p>
+              <p><strong>Dusun:</strong> <br /> {sekolahData.dusun}</p>
               <p>
                 <strong>Kontak:</strong> <br />
                 <a
-                  href={`https://wa.me/${kegiatan.kontak.nomor}`}
+                  href={`https://wa.me/${sekolahData.kegiatan?.contactPerson?.no}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: "#25D366", fontWeight: "bold" }}
                 >
-                  {kegiatan.kontak.nama} ({kegiatan.kontak.nomor})
+                  {sekolahData.kegiatan?.contactPerson?.name} ({sekolahData.kegiatan?.contactPerson?.no})
                 </a>
               </p>
             </section>
 
             <div className="mb-4">
               <iframe
-                src={kegiatan.mapsLink}
+                src={sekolahData.kegiatan?.locationGmaps}
                 width="100%"
                 height="300"
                 style={{ border: "0" }}
@@ -73,14 +102,20 @@ function DetailKesehatanSekolah() {
               ></iframe>
             </div>
 
+            {/* Menampilkan nama kegiatan di bagian akhir */}
+           
+
             <div className="text-center">
-              <Link to="/kegiatan-sekolah">
+              <Link to="/kesehatan-sekolah">
                 <Button variant="primary">Kembali ke Daftar Kegiatan Sekolah</Button>
               </Link>
             </div>
           </Col>
         </Row>
       </Container>
+      <hr></hr>
+
+      <Footer />
     </>
   );
 }

@@ -19,6 +19,7 @@ import Desa from "views/Desa";
 import Sekolah from "views/Sekolah";
 import SekolahTambah from "views/SekolahTambah";
 import SekolahList from "views/SekolahList";
+import SekolahKegiatanModifikasi from "views/SekolahKegiatanModifikasi";
 import SekolahDetail from "views/SekolahDetail";
 import DesaDetailKegiatan from "views/DesaDetailKegiatan";
 import DesaTambah from "views/DesaTambah";
@@ -184,6 +185,14 @@ var routes = [
     isVisible: false
   },
   {
+    path: "/sekolah/:idkegiatan/modifikasi",
+    name: "List Sekolah",
+    icon: "nc-icon nc-caps-small",
+    component: <SekolahKegiatanModifikasi />,
+    layout: "/admin",
+    isVisible: false
+  },
+  {
     path: "/sekolah/tambah",
     name: "Tambah Sekolah",
     icon: "nc-icon nc-caps-small",
@@ -192,7 +201,7 @@ var routes = [
     isVisible: false
   },
   {
-    path: "/sekolah/:namakegiatan/:namasekolah",
+    path: "/sekolah/:idkegiatan/:idsekolah",
     name: "Kegiatan Sekolah",
     icon: "nc-icon nc-caps-small",
     component: <SekolahDetail />,
@@ -200,7 +209,7 @@ var routes = [
     isVisible: false
   },
   {
-    path: "/sekolah/:namakegiatan/:namasekolah/modifikasi",
+    path: "/sekolah/:idkegiatan/:idsekolah/modifikasi",
     name: "Kegiatan Sekolah",
     icon: "nc-icon nc-caps-small",
     component: <SekolahModifikasi />,
@@ -224,7 +233,7 @@ var routes = [
     isVisible: false
   },
   {
-    path: "/lingkungan/:kegiatan",
+    path: "/lingkungan/:idlingkungan",
     name: "Lingkungan",
     icon: "nc-icon nc-caps-small",
     component: <LingkunganDetailAdmin />,
@@ -232,7 +241,7 @@ var routes = [
     isVisible: false
   },
   {
-    path: "/lingkungan/:kegiatan/modifikasi",
+    path: "/lingkungan/:idlingkungan/modifikasi",
     name: "Lingkungan",
     icon: "nc-icon nc-caps-small",
     component: <LingkunganModifikasi />,

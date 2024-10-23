@@ -3,7 +3,7 @@ import { Form, Button, Container, Card, Row, Col } from 'react-bootstrap';
 import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { db } from '../firebase/firebase';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const DusunModifikasi = () => {
     const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ const DusunModifikasi = () => {
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [documentId, setDocumentId] = useState(null);
-
+    const navigate = useNavigate();
     const { namadusun } = useParams();
 
     useEffect(() => {
@@ -111,6 +111,7 @@ const DusunModifikasi = () => {
                 });
 
                 alert('Data berhasil diperbarui!');
+                navigate(-1)
             } catch (err) {
                 console.error('Error updating document:', err);
                 setError('Gagal memperbarui data. Silakan coba lagi.');

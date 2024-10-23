@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, ProgressBar, Card, Row, Col } from 'react-bootstrap';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
-
 import { storage, db } from '../firebase/firebase';
 import {  addDoc, getDoc } from 'firebase/firestore'; // Import Firestore functions
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+
 const DesaModifikasi = () => {
     const { idkegiatan } = useParams();
     const [formData, setFormData] = useState({
@@ -26,6 +26,7 @@ const DesaModifikasi = () => {
     const [uploadProgress, setUploadProgress] = useState(0);
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
 
     // Fetch data from Firebase when component mounts
     useEffect(() => {
@@ -84,7 +85,6 @@ const DesaModifikasi = () => {
         setError(null);
     
         const storage = getStorage(); // Mendapatkan instance dari Firebase Storage
-    
         if (thumbnailFile) {
             const storageRef = ref(storage, `thumbnails/${thumbnailFile.name}`);
             const uploadTask = uploadBytesResumable(storageRef, thumbnailFile);
@@ -129,7 +129,7 @@ const DesaModifikasi = () => {
                         await updateDoc(docRef, updateData);
     
                         alert('Data successfully updated!');
-                        
+                        navigate(-1)
                         // Reset form data setelah submit
                         setFormData({
                             title: '',
@@ -169,7 +169,7 @@ const DesaModifikasi = () => {
         <br></br><br></br><br></br>
         <Container className="mt-4">
             <Card className="p-4 shadow-sm">
-                <h2 className="text-center mb-4">Modifikasi Data Kegiatan Kesehatan</h2>
+                <h2 className="text-center mb-4">Modifikasi Data Kegiatan Kesehatan {formData.title}</h2>
                 {error && <p className="text-danger text-center">{error}</p>}
                 <Form onSubmit={handleSubmit}>
                     <Row>

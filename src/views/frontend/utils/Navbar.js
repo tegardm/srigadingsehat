@@ -14,6 +14,7 @@ const CustomNavbar = () => {
             <Nav.Link href="/penduduk" className="text-dark">Penduduk</Nav.Link>
             <Nav.Link href="/kesehatan" className="text-dark">Kesehatan Desa</Nav.Link>
             <Nav.Link href="/kesehatan-sekolah" className="text-dark">Kesehatan Sekolah</Nav.Link>
+            <Nav.Link href="/fasilitas" className="text-dark">Fasilitas</Nav.Link>
 
             <Nav.Link href="/lingkungan" className="text-dark">Lingkungan</Nav.Link>
             {localStorage.getItem('isLoggedIn') ? (

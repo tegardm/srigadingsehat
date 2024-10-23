@@ -1,80 +1,144 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Container, Row, Col, Button } from "react-bootstrap";
 import { useParams, Link } from "react-router-dom";
-import CustomNavbar from "./utils/Navbar";
+import { db } from "../../firebase/firebase"; // Pastikan sudah ada konfigurasi firebase
+import { doc, getDoc } from "firebase/firestore"; // Import fungsi Firestore
+import CustomNavbar from './utils/Navbar'; // Import the Navbar component
 
-// Dummy data for example
-const kegiatanLingkunganDetails = {
-  nama: "PHBS (Prilaku Hidup Bersih dan Sehat)",
-  deskripsi: `PHBS adalah upaya untuk memberdayakan anggota rumah tangga agar tahu, mau, dan mampu mempraktikkan perilaku hidup sehat. 
-  Kegiatan ini meliputi sosialisasi tentang pentingnya mencuci tangan, penggunaan jamban sehat, dan menjaga kebersihan lingkungan sekitar rumah.`,
-  jadwal: "Setiap Sabtu, pukul 08:00 - 11:00 WIB",
-  kontak: {
-    nama: "Bapak Rahman",
-    nomor: "628123456789"
-  },
-  alamat: "Balai Dusun Mendek, Desa Srigading",
-  mapsLink: "https://www.openstreetmap.org/export/embed.html?bbox=110.387857,-7.813249,110.407857,-7.793249&layer=mapnik&marker=-7.803249,110.397857",
-  thumbnail: "https://via.placeholder.com/1200x400?text=Kegiatan+PHBS+Lingkungan",
-  infoTambahan: `Kegiatan ini melibatkan partisipasi aktif warga dusun serta dukungan dari kader kesehatan desa. 
-  Peserta diharapkan membawa peralatan pribadi seperti masker dan hand sanitizer.`,
-};
+function LingkunganDetail() {
+  const { idlingkungan } = useParams(); // Mengambil parameter id dari URL
+  const [kegiatan, setKegiatan] = useState(null); // State untuk menyimpan data kegiatan
+  const [error, setError] = useState(null); // State untuk error
+  const [loading, setLoading] = useState(true); // State untuk loading
 
-function DetailLingkunganDusun() {
-  const { kegiatanNama } = useParams();
+  // Fungsi untuk mengambil data dari Firestore
+  const fetchKegiatanData = async () => {
+    try {
+      const docRef = doc(db, "lingkungans", idlingkungan); // Referensi dokumen berdasarkan idlingkungan
+      const docSnap = await getDoc(docRef); // Mendapatkan dokumen dari Firestore
 
-  const kegiatan = kegiatanLingkunganDetails;
+      if (docSnap.exists()) {
+        setKegiatan(docSnap.data()); // Mengisi state kegiatan dengan data dari Firestore
+      } else {
+        console.log("No such document!");
+        setError("Kegiatan tidak ditemukan");
+      }
+    } catch (err) {
+      console.error("Error fetching kegiatan:", err);
+      setError("Gagal mengambil data kegiatan");
+    } finally {
+      setLoading(false); // Selesai loading
+    }
+  };
+
+  // Mengambil data dari Firestore saat komponen di-mount
+  useEffect(() => {
+    fetchKegiatanData();
+  }, [idlingkungan]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  if (!kegiatan) {
+    return <p>Data kegiatan tidak tersedia</p>;
+  }
 
   return (
     <>
-      <CustomNavbar />
+    <CustomNavbar/>
       <Container className="my-5 pt-5">
-        <h2 className="mb-4 text-center">{kegiatan.nama}</h2>
+        {/* Header Section */}
+        <h1 className="mb-4 text-center">{kegiatan.title || "Kegiatan Tanpa Judul"}</h1>
 
-        <Card className="mb-4">
-          <Card.Img
-            variant="top"
-            src={kegiatan.thumbnail}
-            alt={`Thumbnail for ${kegiatan.nama}`}
-          />
+        {/* Thumbnail Section */}
+        <Card className="mb-5">
+          {kegiatan.thumbnail ? (
+            <Card.Img
+              variant="top"
+              src={kegiatan.thumbnail}
+              alt={`Thumbnail for ${kegiatan.title}`}
+              style={{ height: "400px", objectFit: "cover" }}
+            />
+          ) : (
+            <p className="text-center">Gambar tidak tersedia</p>
+          )}
         </Card>
 
+        {/* Blog Style Content */}
         <Row>
           <Col md={8} className="mx-auto">
+            {/* Deskripsi Kegiatan */}
             <section className="mb-4">
-              <h5>Deskripsi</h5>
-              <p>{kegiatan.deskripsi}</p>
-              <p><strong>Jadwal:</strong> <br /> {kegiatan.jadwal}</p>
-              <p><strong>Lokasi:</strong> <br /> {kegiatan.alamat}</p>
-              <p><strong>Informasi Tambahan:</strong> <br /> {kegiatan.infoTambahan}</p>
-              <p>
-                <strong>Kontak:</strong> <br />
-                <a
-                  href={`https://wa.me/${kegiatan.kontak.nomor}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "#25D366", fontWeight: "bold" }}
-                >
-                  {kegiatan.kontak.nama} ({kegiatan.kontak.nomor})
-                </a>
+              <h3>Deskripsi Kegiatan</h3>
+              <p style={{ fontSize: "1.1rem", lineHeight: "1.8" }}>
+                {kegiatan.description || "Deskripsi tidak tersedia."}
               </p>
             </section>
 
-            <div className="mb-4">
-              <iframe
-                src={kegiatan.mapsLink}
-                width="100%"
-                height="300"
-                style={{ border: "0" }}
-                allowFullScreen=""
-                loading="lazy"
-                title="Lokasi Map"
-              ></iframe>
-            </div>
+            {/* Jadwal Kegiatan */}
+            <section className="mb-4">
+              <h4>Jadwal Kegiatan</h4>
+              <p style={{ fontSize: "1.1rem" }}>{kegiatan.schedule || "Jadwal tidak tersedia."}</p>
+            </section>
 
-            <div className="text-center">
-              <Link to="/lingkungan-dusun">
-                <Button variant="primary">Kembali ke Daftar Kegiatan Lingkungan</Button>
+            {/* Informasi Tambahan */}
+            <section className="mb-4">
+              <h4>Informasi Tambahan</h4>
+              <p style={{ fontSize: "1.1rem", lineHeight: "1.8" }}>
+                {kegiatan.additionalInfo || "Informasi tambahan tidak tersedia."}
+              </p>
+            </section>
+
+            {/* Kontak Person (hyperlink to WhatsApp) */}
+            {kegiatan.contactPerson && kegiatan.contactPerson.no && (
+              <section className="mb-4">
+                <h4>Kontak Person</h4>
+                <p style={{ fontSize: "1.1rem" }}>
+                  CP:{" "}
+                  <a
+                    href={`https://wa.me/${kegiatan.contactPerson.no}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "#25D366", fontWeight: "bold" }}
+                  >
+                    {kegiatan.contactPerson.name} ({kegiatan.contactPerson.no})
+                  </a>
+                </p>
+              </section>
+            )}
+
+            {/* Alamat Lokasi dan Google Maps */}
+            <section className="mb-4">
+              <h4>Alamat Lokasi</h4>
+              <p style={{ fontSize: "1.1rem" }}>{kegiatan.locationAddress || "Alamat tidak tersedia."}</p>
+              {/* Google Maps Embed */}
+              {kegiatan.locationGmaps && (
+                <div className="map-responsive mb-4">
+                  <iframe
+                    src={kegiatan.locationGmaps}
+                    width="100%"
+                    height="400"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Google Maps Lokasi"
+                  ></iframe>
+                </div>
+              )}
+            </section>
+
+            {/* Back Button */}
+            <div className="text-center mt-5">
+              <Link to="/lingkungan">
+                <Button variant="primary" size="lg">
+                  Kembali ke Daftar Kegiatan
+                </Button>
               </Link>
             </div>
           </Col>
@@ -84,4 +148,4 @@ function DetailLingkunganDusun() {
   );
 }
 
-export default DetailLingkunganDusun;
+export default LingkunganDetail;

@@ -19,6 +19,7 @@ const FasilitasModifikasi = () => {
             waktuTutup: '',
             hariBuka: []
         },
+        dusun : '',
         layanan: [],
         thumbnail: null,
     });
@@ -195,6 +196,22 @@ const FasilitasModifikasi = () => {
                             value={fasilitas.alamat}
                             onChange={handleInputChange}
                         />
+                    </Form.Group>
+                    <br/>
+                    <Form.Group controlId="formDusun">
+                    <Form.Label>Dusun</Form.Label>
+                    <Form.Control
+                        as="select"
+                        name="dusun"
+                        value={fasilitas.dusun}
+                        onChange={handleInputChange}
+                    >
+                        <option value="">Pilih Dusun</option>
+                        <option value="krajan">Krajan</option>
+                        <option value="gading">Gading</option>
+                        <option value="mendek">Mendek</option>
+                        <option value="jeruk">Jeruk</option>
+                    </Form.Control>
                     </Form.Group>
                     <br />
                     <Form.Group controlId="formCPPetugas">

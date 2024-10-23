@@ -1,37 +1,41 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Card, Row, Col, Button, Form, InputGroup } from "react-bootstrap"; // Import additional components
+import { Card, Row, Col, Button, Form, InputGroup } from "react-bootstrap";
+import { db } from "../firebase/firebase"; // Import Firestore configuration
+import { collection, getDocs, query, where } from "firebase/firestore"; // Firestore functions
 
 function Lingkungan() {
   const [kegiatanData, setKegiatanData] = useState([]);
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
   const [error, setError] = useState(null);
-
-  // Data Kegiatan Kesehatan Sekolah dengan Thumbnail Dummy Statis
-  const kegiatanKesehatanSekolah = [
-    {
-      nama: "Prilaku Hidup Bersih dan Sehat (PHBS)",
-      slug: "phbs",
-      deskripsi: "Pemeriksaan kesehatan secara menyeluruh untuk siswa guna mendeteksi dini masalah kesehatan.",
-    },
-    // Tambahkan lebih banyak kegiatan jika diperlukan
-  ];
-
-  const { namadusun } = useParams();
+  const { namadusun } = useParams(); // Get dusun from params if needed
 
   useEffect(() => {
-    // Simulasi pengambilan data dari Firestore
+    // Fetch kegiatan data from Firestore
     const fetchKegiatanData = async () => {
       try {
-        setKegiatanData(kegiatanKesehatanSekolah);
+        const q = query(collection(db, "lingkungans")); // Fetch only data for the specified dusun
+        const querySnapshot = await getDocs(q);
+
+        const data = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setKegiatanData(data);
       } catch (err) {
-        setError(err.message);
+        setError("Failed to fetch data from Firestore.");
         console.error("Error fetching kegiatan data: ", err);
       }
     };
 
     fetchKegiatanData();
-  }, []);
+  }, [namadusun]); // Fetch data based on dusun
+
+  // Fungsi untuk memotong deskripsi yang terlalu panjang
+  const truncateText = (text, maxLength) => {
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  };
 
   // Fungsi untuk menangani perubahan pencarian
   const handleSearchChange = (e) => {
@@ -39,18 +43,21 @@ function Lingkungan() {
   };
 
   // Filter kegiatan berdasarkan search term
-  const filteredKegiatan = kegiatanData.filter((kegiatan) =>
-    kegiatan.nama.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+// Filter kegiatan berdasarkan search term
+const filteredKegiatan = kegiatanData.filter((kegiatan) =>
+  kegiatan.title?.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
 
   return (
     <div className="content">
-      <h2 className="mb-4">Data Kegiatan Kesehatan Sekolah Desa Srigading</h2>
+      <h2 className="mb-4">Data Kegiatan Lingkungan Desa {namadusun}</h2>
       <Link to={`/admin/lingkungan/tambah`}>
-        <Button variant="success" className="mr-2">Tambah Kegiatan</Button>
+        <Button variant="success" className="mb-3">Tambah Kegiatan</Button>
       </Link>
-      {error && <p>Error: {error}</p>}
+      {error && <p className="text-danger">{error}</p>}
 
+      {/* Search Bar */}
       <InputGroup className="mb-3">
         <Form.Control
           type="text"
@@ -65,15 +72,24 @@ function Lingkungan() {
           filteredKegiatan.map((kegiatan, index) => (
             <Col md={6} key={index} className="mb-4">
               <Card>
+                {kegiatan.thumbnail && (
+                  <Card.Img variant="top" src={kegiatan.thumbnail} style={{ width: "600px", height: "320px", objectFit: "cover" }}
+
+                   alt={kegiatan.title} />
+                )}
                 <Card.Body>
-                  <Card.Title>{kegiatan.nama ? kegiatan.nama : "Nama kegiatan tidak diketahui"}</Card.Title>
+                  <Card.Title>{kegiatan.title ? kegiatan.title : "Nama kegiatan tidak diketahui"}</Card.Title>
                   <Card.Text>
-                    {kegiatan.deskripsi ? kegiatan.deskripsi : "Deskripsi tidak tersedia"}
+                  {kegiatan.dusun.toUpperCase()}
                   </Card.Text>
-                  <Link to={`/admin/lingkungan/${kegiatan.slug}`}>
+                  <Card.Text>
+                    {truncateText(kegiatan.description ? kegiatan.description : "Deskripsi tidak tersedia", 100)}
+                  </Card.Text>
+                 
+                  <Link to={`/admin/lingkungan/${kegiatan.id}`}>
                     <Button variant="success" className="mr-2">Lihat Kegiatan</Button>
                   </Link>
-                  <Link to={`/admin/lingkungan/${kegiatan.slug}/modifikasi`}>
+                  <Link to={`/admin/lingkungan/${kegiatan.id}/modifikasi`}>
                     <Button variant="warning" className="mr-2">Modifikasi</Button>
                   </Link>
                 </Card.Body>

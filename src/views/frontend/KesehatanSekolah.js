@@ -1,34 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, ListGroup } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { collection, getDocs } from "firebase/firestore";
+import { db } from '../../firebase/firebase'; // Import Firestore instance
 import CustomNavbar from './utils/Navbar'; // Import the Navbar component
-
-// Data for school health activities
-const dataKesehatanSekolah = [
-  {
-    sekolah: 'SDN 1 Srigading',
-    kegiatan: ['Skrining Kesehatan Sekolah', 'BIAS']
-  },
-  {
-    sekolah: 'SDN 2 Srigading',
-    kegiatan: ['Skrining Kesehatan Sekolah', 'BIAS']
-  },
-  {
-    sekolah: 'SDN 3 Srigading',
-    kegiatan: ['Skrining Kesehatan Sekolah', 'BIAS']
-  },
-  {
-    sekolah: 'SMPN 1 Lawang, Atap',
-    kegiatan: ['Skrining Kesehatan Sekolah', 'BIAS']
-  }
-];
-
-// Function to generate dynamic URL based on the school and activity
-const generateLink = (sekolah, kegiatan) => {
-  return `/kesehatan-sekolah/${sekolah.toLowerCase().replace(/\s+/g, '-')}/${kegiatan.toLowerCase().replace(/\s+/g, '-')}`;
-};
+import Footer from 'components/Footer/Footer';
+import { Link } from 'react-router-dom';
 
 const KesehatanSekolah = () => {
+  const [dataSekolah, setDataSekolah] = useState({});
+  const [kegiatanNames, setKegiatanNames] = useState({}); // To store kegiatan names by idkegiatan
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch data from the 'sekolahs' collection
+        const sekolahSnapshot = await getDocs(collection(db, "sekolahs"));
+        const sekolahData = {};
+        sekolahSnapshot.forEach((doc) => {
+          const data = doc.data();
+          const idkegiatan = data.idkegiatan;
+
+          // Tambahkan id dokumen sekolah ke dalam data
+          const sekolahWithId = { id: doc.id, ...data };
+
+          if (!sekolahData[idkegiatan]) {
+            sekolahData[idkegiatan] = [];
+          }
+          sekolahData[idkegiatan].push(sekolahWithId); // Push sekolah dengan id
+        });
+        setDataSekolah(sekolahData);
+
+        // Fetch data from 'kegiatansekolahs' to get names of kegiatan
+        const kegiatanSnapshot = await getDocs(collection(db, "kegiatansekolahs"));
+        const kegiatanNamesData = {};
+        kegiatanSnapshot.forEach((doc) => {
+          const kegiatanData = doc.data();
+          kegiatanNamesData[doc.id] = kegiatanData.title; // Store title by idkegiatan
+        });
+        setKegiatanNames(kegiatanNamesData);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <CustomNavbar />
@@ -36,16 +53,19 @@ const KesehatanSekolah = () => {
         <Container>
           <h2 className="text-center mb-5">Kegiatan Kesehatan Sekolah di Desa Srigading</h2>
           <Row>
-            {dataKesehatanSekolah.map((sekolahData, index) => (
-              <Col md={6} className="mb-4" key={index}>
+            {Object.keys(dataSekolah).map((idkegiatan) => (
+              <Col md={6} className="mb-4" key={idkegiatan}>
                 <div className="p-4 bg-white shadow rounded hover-effect">
-                  <h4 className="text-primary mb-3">{sekolahData.sekolah}</h4>
+                  {/* Header menggunakan nama kegiatan */}
+                  <h4 className="text-primary mb-3">
+                    {kegiatanNames[idkegiatan] || "Kegiatan Tidak Diketahui"}
+                  </h4>
                   <ListGroup>
-                    {sekolahData.kegiatan.map((kegiatan, idx) => (
-                      <ListGroup.Item key={idx}>
-                        <Link to={generateLink(sekolahData.sekolah, kegiatan)} className="text-decoration-none">
-                          {kegiatan}
-                        </Link>
+                    {/* Render nama sekolah */}
+                    {dataSekolah[idkegiatan].map((sekolah, index) => (
+                      <ListGroup.Item key={index}>
+                        {/* Nama sekolah sebagai list item */}
+                        <Link to={`/kesehatan-sekolah/${sekolah.id}`}>{sekolah.nama}</Link> 
                       </ListGroup.Item>
                     ))}
                   </ListGroup>
@@ -55,6 +75,7 @@ const KesehatanSekolah = () => {
           </Row>
         </Container>
       </div>
+      <Footer />
     </>
   );
 };

@@ -125,6 +125,7 @@ const FasilitasTambah = () => {
                                 waktuTutup: "",
                                 hariBuka: []
                             },
+                            dusun : '',
                             layanan: [],
                             thumbnail: ""
                         });
@@ -188,10 +189,10 @@ const FasilitasTambah = () => {
                         onChange={handleInputChange}
                     >
                         <option value="">Pilih Dusun</option>
-                        <option value="Krajan">Krajan</option>
-                        <option value="Gading">Gading</option>
-                        <option value="Mendek">Mendek</option>
-                        <option value="Jeruk">Jeruk</option>
+                        <option value="krajan">Krajan</option>
+                        <option value="gading">Gading</option>
+                        <option value="mendek">Mendek</option>
+                        <option value="jeruk">Jeruk</option>
                     </Form.Control>
                                 </Form.Group>
                 <br />

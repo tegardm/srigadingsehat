@@ -30,26 +30,17 @@ function Footer(props) {
           <nav className="footer-nav">
             <ul>
               <li>
-                <a href="https://www.creative-tim.com" target="_blank">
-                  Creative Tim
+                <a href="https://www.instagram.com/tegar_deyustian/" target="_blank">
+                  Contact Developer
                 </a>
               </li>
-              <li>
-                <a href="https://blog.creative-tim.com" target="_blank">
-                  Blog
-                </a>
-              </li>
-              <li>
-                <a href="https://www.creative-tim.com/license" target="_blank">
-                  Licenses
-                </a>
-              </li>
+             
             </ul>
           </nav>
           <div className="credits ml-auto">
             <div className="copyright">
-              &copy; {1900 + new Date().getYear()}, made with{" "}
-              <i className="fa fa-heart heart" /> by Creative Tim
+              &copy; {1900 + new Date().getYear()}, Made by 
+                 Tegar Deyustian (UM 22 CS Student / Fullstack Developer / Unpaid Programmer )
             </div>
           </div>
         </Row>

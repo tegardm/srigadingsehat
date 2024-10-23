@@ -76,7 +76,7 @@ console.log('Full fasilitasList:', fasilitasList);
 const filteredFasilitas = fasilitasList.filter(fasilitas => {
     // Check if 'nama' exists and matches the search term
     const hasValidName = fasilitas.nama && fasilitas.nama.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDusun = filterDusun === '' || fasilitas.dusun === filterDusun;
+    const matchesDusun = filterDusun === '' || fasilitas.dusun == filterDusun;
   
     return hasValidName && matchesDusun;
   });
@@ -104,10 +104,10 @@ console.log('Filtered fasilitasList:', filteredFasilitas);
           <Col md={4}>
             <Form.Control as="select" value={filterDusun} onChange={handleFilterChange}>
               <option value="">Semua Dusun</option>
-              <option value="Gading">Gading</option>
-              <option value="Krajan">Krajan</option>
-              <option value="Mendek">Mendek</option>
-              <option value="Jeruk">Jeruk</option>
+              <option value="gading">Gading</option>
+              <option value="krajan">Krajan</option>
+              <option value="mendek">Mendek</option>
+              <option value="jeruk">Jeruk</option>
             </Form.Control>
           </Col>
           <Col md={4} className="text-right">

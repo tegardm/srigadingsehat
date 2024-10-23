@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, query, where, writeBatch, getFirestore, doc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Link, useParams } from "react-router-dom";
 import { Card, Row, Col, Button } from "react-bootstrap"; // Import React Bootstrap components
@@ -30,12 +30,62 @@ function Sekolah() {
     fetchKegiatanData();
   }, []);
 
+  // Fungsi untuk menghapus kegiatan
+  // Fungsi untuk menghapus kegiatan
+// Fungsi untuk menghapus kegiatan
+const truncateText = (text, maxWords) => {
+  const words = text.split(' ');
+  if (words.length > maxWords) {
+      return words.slice(0, maxWords).join(' ') + '...';
+  }
+  return text;
+};
+// Function to delete a kegiatan
+const handleDelete = async (id) => {
+  if (window.confirm("Apakah Anda yakin ingin menghapus kegiatan ini ? jika menghapus maka semua data sekolah yang berkaitan dengan data kegiatan ini akan terhapus.")) {
+    try {
+      // Delete the kegiatan from the 'kegiatansekolahs' collection
+      await deleteDoc(doc(db, "kegiatansekolahs", id));
+
+      // Get Firestore instance
+      const firestore = getFirestore();
+
+      // Find documents in 'sekolahs' collection where 'idkegiatan' matches 'id'
+      const sekolahsQuery = query(collection(firestore, "sekolahs"), where("idkegiatan", "==", id));
+      const sekolahsSnapshot = await getDocs(sekolahsQuery);
+
+      if (!sekolahsSnapshot.empty) {
+        // Create a batch
+        const batch = writeBatch(firestore);
+
+        sekolahsSnapshot.forEach((sekolahDoc) => {
+          const sekolahRef = doc(firestore, "sekolahs", sekolahDoc.id);
+          batch.delete(sekolahRef);
+        });
+
+        // Commit the batch
+        await batch.commit();
+      }
+
+      // Update the state after deletion
+      setKegiatanData((prevData) => prevData.filter((kegiatan) => kegiatan.id !== id));
+      alert("Kegiatan dan data terkait berhasil dihapus!");
+    } catch (err) {
+      console.error("Error deleting kegiatan: ", err);
+      setError("Gagal menghapus kegiatan. Silakan coba lagi.");
+    }
+  }
+};
+
+
+
+
   return (
     <div className="content">
       <Link to={`/admin/sekolah/tambah`}>
         <Button variant="success" className="mr-2">Tambah Kegiatan</Button>
       </Link>
-      <h2 className="mb-4">Data Kegiatan Kesehatan Sekolah Desa Srigading</h2>
+      <h2 className="mb-4">Data Kegiatan Kesehatan Sekolah Desa Srigading 2</h2>
       {error && <p>Error: {error}</p>}
       
       <Row>
@@ -52,11 +102,15 @@ function Sekolah() {
                 <Card.Body>
                   <Card.Title>{kegiatan.title || "Nama kegiatan tidak diketahui"}</Card.Title>
                   <Card.Text>
-                    {kegiatan.description || "Deskripsi tidak tersedia"}
+                    {truncateText(kegiatan.description, 20) || "Deskripsi tidak tersedia"}
                   </Card.Text>
                   <Link to={`/admin/sekolah/${kegiatan.id}`}>
                     <Button variant="success" className="mr-2">Lihat Kegiatan</Button>
                   </Link>
+                  <Link to={`/admin/sekolah/${kegiatan.id}/modifikasi`}>
+                    <Button variant="warning" className="mr-2">Modifikasi Kegiatan</Button>
+                  </Link>
+                  <Button variant="danger" onClick={() => handleDelete(kegiatan.id)}>Hapus Kegiatan</Button>
                 </Card.Body>
               </Card>
             </Col>

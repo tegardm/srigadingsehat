@@ -123,7 +123,7 @@ function FixedPlugin(props) {
               />
             </div>
           </li>
-          <li className="button-container">
+          {/* <li className="button-container">
             <Button
               href="https://www.creative-tim.com/product/paper-dashboard-react?ref=pdr-fixed-plugin"
               color="primary"
@@ -132,20 +132,10 @@ function FixedPlugin(props) {
             >
               Download now
             </Button>
-          </li>
-          <li className="button-container">
-            <Button
-              href="https://www.creative-tim.com/product/paper-dashboard-react/#/documentation/tutorial?ref=pdr-fixed-plugin"
-              color="default"
-              block
-              className="btn-round"
-              outline
-            >
-              <i className="nc-icon nc-paper" /> Documentation
-            </Button>
-          </li>
-          <li className="header-title">Want more components?</li>
-          <li className="button-container">
+          </li> */}
+         
+          
+          {/* <li className="button-container">
             <Button
               href="https://www.creative-tim.com/product/paper-dashboard-pro-react?ref=pdr-fixed-plugin"
               color="danger"
@@ -155,7 +145,7 @@ function FixedPlugin(props) {
             >
               Get pro version
             </Button>
-          </li>
+          </li> */}
         </ul>
       </div>
     </div>
