@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Link, useParams } from "react-router-dom";
-import { Card, Row, Col, Button } from "react-bootstrap"; // Import React Bootstrap components
+import { Card, Row, Col, Button, Modal } from "react-bootstrap"; // Import React Bootstrap components
 
 function DesaKegiatan() {
   const [kegiatanData, setKegiatanData] = useState([]);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedKegiatan, setSelectedKegiatan] = useState(null);
 
   const { namadusun } = useParams();
 
@@ -32,6 +34,35 @@ function DesaKegiatan() {
     fetchKegiatanData();
   }, [namadusun]);
 
+  const truncateText = (text, maxWords) => {
+    const words = text.split(" ");
+    if (words.length > maxWords) {
+      return words.slice(0, maxWords).join(" ") + "...";
+    }
+    return text;
+  };
+
+  // Fungsi untuk membuka modal konfirmasi hapus
+  const handleDeleteModal = (kegiatan) => {
+    setSelectedKegiatan(kegiatan);
+    setShowModal(true);
+  };
+
+  // Fungsi untuk menghapus data kegiatan dari Firestore
+  const handleDeleteKegiatan = async () => {
+    try {
+      if (selectedKegiatan) {
+        await deleteDoc(doc(db, "kesehatans", selectedKegiatan.id));
+        setKegiatanData(kegiatanData.filter(item => item.id !== selectedKegiatan.id));
+        setShowModal(false);
+        setSelectedKegiatan(null);
+      }
+    } catch (error) {
+      console.error("Error deleting kegiatan: ", error);
+      setError(error.message);
+    }
+  };
+
   return (
     <div className="content">
       <h2>Data Kegiatan Kesehatan Masyarakat Desa Srigading</h2>
@@ -53,7 +84,7 @@ function DesaKegiatan() {
                 <Card.Body>
                   <Card.Title>{kegiatan.title ? kegiatan.title : "Nama kegiatan tidak diketahui"}</Card.Title>
                   <Card.Text>
-                    {kegiatan.description ? kegiatan.description : "Deskripsi tidak tersedia"}
+                    {kegiatan.description ? truncateText(kegiatan.description, 20) : "Deskripsi tidak tersedia"}
                   </Card.Text>
                   <Link to={`/admin/desa/${namadusun}/kegiatan/${kegiatan.id}`}>
                     <Button variant="success" className="mr-2">Lihat Kegiatan</Button>
@@ -61,6 +92,7 @@ function DesaKegiatan() {
                   <Link to={`/admin/desa/${namadusun}/kegiatan/${kegiatan.id}/modifikasi`}>
                     <Button variant="warning" className="mr-2">Modifikasi</Button>
                   </Link>
+                  <Button variant="danger" onClick={() => handleDeleteModal(kegiatan)}>Hapus</Button>
                 </Card.Body>
               </Card>
             </Col>
@@ -69,6 +101,24 @@ function DesaKegiatan() {
           <p>Data tidak tersedia.</p>
         )}
       </Row>
+
+      {/* Modal konfirmasi hapus */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Konfirmasi Hapus</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Apakah Anda yakin ingin menghapus kegiatan ini?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Batal
+          </Button>
+          <Button variant="danger" onClick={handleDeleteKegiatan}>
+            Hapus
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

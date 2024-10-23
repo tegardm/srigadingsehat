@@ -39,7 +39,7 @@ function Footer(props) {
           </nav>
           <div className="credits ml-auto">
             <div className="copyright">
-              &copy; {1900 + new Date().getYear()}, Made by 
+              &copy; Copyright {1900 + new Date().getYear()} , Made by 
                  Tegar Deyustian (UM 22 CS Student / Fullstack Developer / Unpaid Programmer )
             </div>
           </div>

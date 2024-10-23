@@ -35,7 +35,7 @@ var routes = [
   {
     path: "/dashboard",
     name: "Dashboard",
-    icon: "nc-icon nc-bank",
+    icon: "nc-icon nc-tile-56",
     component: <Dashboard />,
     layout: "/admin",
     isVisible: true
@@ -131,7 +131,7 @@ var routes = [
   {
     path: "/desa/:namadusun/modifikasi",
     name: "Posyandu Desa",
-    icon: "nc-icon nc-tile-56",
+    icon: "nc-icon nc-caps-small",
     component: <DusunModifikasi />,
     layout: "/admin",
     isVisible: false
@@ -139,7 +139,7 @@ var routes = [
   {
     path: "/desa/:namadusun/kegiatan/:idkegiatan",
     name: "Posyandu Desa",
-    icon: "nc-icon nc-tile-56",
+    icon: "nc-icon nc-caps-small",
     component: <DesaDetailKegiatan />,
     layout: "/admin",
     isVisible: false
@@ -147,7 +147,7 @@ var routes = [
   {
     path: "/desa/:namadusun/kegiatan/tambah",
     name: "Posyandu Desa",
-    icon: "nc-icon nc-tile-56",
+    icon: "nc-icon nc-caps-small",
     component: <DesaTambah />,
     layout: "/admin",
     isVisible: false
@@ -155,7 +155,7 @@ var routes = [
   {
     path: "/desa/:namadusun/kegiatan/:idkegiatan/modifikasi",
     name: "Posyandu Desa",
-    icon: "nc-icon nc-tile-56",
+    icon: "nc-icon nc-caps-small",
     component: <DesaModifikasi />,
     layout: "/admin",
     isVisible: false
@@ -163,7 +163,7 @@ var routes = [
   {
     path: "/sekolah",
     name: "Kesehatan Sekolah",
-    icon: "nc-icon nc-caps-small",
+    icon: "nc-icon nc-tile-56",
     component: <Sekolah />,
     layout: "/admin",
     isVisible: true
@@ -219,7 +219,7 @@ var routes = [
   {
     path: "/lingkungan",
     name: "Lingkungan",
-    icon: "nc-icon nc-caps-small",
+    icon: "nc-icon nc-tile-56",
     component: <Lingkungan />,
     layout: "/admin",
     isVisible: true
@@ -227,7 +227,7 @@ var routes = [
   {
     path: "/lingkungan/tambah",
     name: "Lingkungan",
-    icon: "nc-icon nc-caps-small",
+    icon: "nc-icon nc-tile-56",
     component: <LingkunganTambah />,
     layout: "/admin",
     isVisible: false

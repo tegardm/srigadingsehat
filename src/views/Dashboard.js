@@ -1,25 +1,5 @@
-/*!
-
-=========================================================
-* Paper Dashboard React - v1.3.2
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-* Licensed under MIT (https://github.com/creativetimofficial/paper-dashboard-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React from "react";
-// react plugin used to create charts
-import { Line, Pie } from "react-chartjs-2";
-// reactstrap components
+import React, { useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
 import {
   Card,
   CardHeader,
@@ -29,14 +9,41 @@ import {
   Row,
   Col,
 } from "reactstrap";
-// core components
+import { db } from "../firebase/firebase"; // Import Firestore configuration
+import {
+  collection,
+  getDocs,
+} from "firebase/firestore";
 import {
   dashboard24HoursPerformanceChart,
-  dashboardEmailStatisticsChart,
-  dashboardNASDAQChart,
 } from "variables/charts.js";
 
 function Dashboard() {
+  const [data, setData] = useState({
+    totalPenduduk: 0,
+    totalFasilitasKesehatan: 0,
+    totalSekolah: 0,
+    totalKegiatanKesehatan: 0,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const pendudukSnapshot = await getDocs(collection(db, "penduduks"));
+      const sekolahSnapshot = await getDocs(collection(db, "sekolahs"));
+      const fasilitasSnapshot = await getDocs(collection(db, "fasilitas"));
+      const kesehatanSnapshot = await getDocs(collection(db, "kesehatans"));
+
+      setData({
+        totalPenduduk: pendudukSnapshot.size,
+        totalSekolah: sekolahSnapshot.size,
+        totalFasilitasKesehatan: fasilitasSnapshot.size,
+        totalKegiatanKesehatan: kesehatanSnapshot.size,
+      });
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <div className="content">
@@ -52,8 +59,8 @@ function Dashboard() {
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Jumlah Warga Desa</p>
-                      <CardTitle tag="p">4609</CardTitle>
+                      <p className="card-category">Jumlah Data Penduduk</p>
+                      <CardTitle tag="p">{data.totalPenduduk}</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -61,9 +68,6 @@ function Dashboard() {
               </CardBody>
               <CardFooter>
                 <hr />
-                <div className="stats">
-                  <i className="fas fa-sync-alt" /> Update Now
-                </div>
               </CardFooter>
             </Card>
           </Col>
@@ -78,8 +82,8 @@ function Dashboard() {
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Jumlah Kegiatan Kesehatan Desa</p>
-                      <CardTitle tag="p"> 24</CardTitle>
+                      <p className="card-category">Jumlah Fasilitas Kesehatan Desa</p>
+                      <CardTitle tag="p">{data.totalFasilitasKesehatan}</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -87,9 +91,6 @@ function Dashboard() {
               </CardBody>
               <CardFooter>
                 <hr />
-                <div className="stats">
-                  <i className="far fa-calendar" /> Last day
-                </div>
               </CardFooter>
             </Card>
           </Col>
@@ -104,8 +105,8 @@ function Dashboard() {
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Jumlah Tenaga Kesehatan Desa</p>
-                      <CardTitle tag="p">12</CardTitle>
+                      <p className="card-category">Jumlah Sekolah Desa</p>
+                      <CardTitle tag="p">{data.totalSekolah}</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -113,9 +114,6 @@ function Dashboard() {
               </CardBody>
               <CardFooter>
                 <hr />
-                <div className="stats">
-                  <i className="far fa-clock" /> In the last hour
-                </div>
               </CardFooter>
             </Card>
           </Col>
@@ -130,8 +128,8 @@ function Dashboard() {
                   </Col>
                   <Col md="8" xs="7">
                     <div className="numbers">
-                      <p className="card-category">Jumlah Sekolah Srigading</p>
-                      <CardTitle tag="p">4</CardTitle>
+                      <p className="card-category">Jumlah Kegiatan Kesehatan</p>
+                      <CardTitle tag="p">{data.totalKegiatanKesehatan}</CardTitle>
                       <p />
                     </div>
                   </Col>
@@ -139,9 +137,6 @@ function Dashboard() {
               </CardBody>
               <CardFooter>
                 <hr />
-                <div className="stats">
-                  <i className="fas fa-sync-alt" /> Update now
-                </div>
               </CardFooter>
             </Card>
           </Col>
@@ -168,14 +163,6 @@ function Dashboard() {
                 </div>
               </CardFooter>
             </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col md="4">
-          
-          </Col>
-          <Col md="8">
-         
           </Col>
         </Row>
       </div>

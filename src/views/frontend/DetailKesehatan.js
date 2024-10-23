@@ -62,7 +62,7 @@ function DesaDetailKegiatan() {
               <h5>Deskripsi</h5>
               <p>{kegiatan.description}</p>
               <p><strong>Jadwal:</strong> <br /> {kegiatan.schedule}</p>
-              <p><strong>Lokasi:</strong> <br /> {kegiatan.locationAddress}</p>
+              
               <p><strong>Informasi Tambahan:</strong> <br /> {kegiatan.additionalInfo}</p>
               <p>
                 <strong>Kontak:</strong> <br />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Button, Form, InputGroup, Row, Col, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { db } from '../firebase/firebase'; // Adjust the path according to your project structure
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore'; // Import deleteDoc
 
 // Fungsi untuk membuat slug dari sebuah teks
 const createSlug = (text) => {
@@ -22,13 +22,10 @@ const Fasilitas = () => {
     try {
       const fasilitasCollection = collection(db, 'fasilitas');
       const fasilitasSnapshot = await getDocs(fasilitasCollection);
-      console.log("Fetched documents:", fasilitasSnapshot.docs); // Log fetched documents
   
       const fasilitasData = fasilitasSnapshot.docs.map(doc => {
         const data = doc.data();
-        console.log("Document data:", data); // Log individual document data
   
-        // Use 'nama' instead of 'name' as the field name
         return {
           id: doc.id,
           ...data,
@@ -41,9 +38,20 @@ const Fasilitas = () => {
       console.error('Error fetching fasilitas data:', error);
     }
   };
-  
-  
-  
+
+  // Fungsi untuk menghapus fasilitas berdasarkan ID
+  const deleteFasilitas = async (id) => {
+    try {
+      const docRef = doc(db, 'fasilitas', id); // Ambil referensi ke dokumen fasilitas berdasarkan ID
+      await deleteDoc(docRef); // Hapus dokumen dari Firestore
+      // Hapus fasilitas dari state setelah berhasil dihapus
+      setFasilitasList(prevList => prevList.filter(fasilitas => fasilitas.id !== id));
+      alert('Fasilitas berhasil dihapus');
+    } catch (error) {
+      console.error('Error deleting fasilitas:', error);
+      alert('Gagal menghapus fasilitas. Silakan coba lagi.');
+    }
+  };
 
   useEffect(() => {
     fetchFasilitasData();
@@ -60,29 +68,20 @@ const Fasilitas = () => {
   };
 
   // Fungsi untuk memotong deskripsi hingga 20 kata
-// Updated truncateDescription function
-const truncateDescription = (description, length) => {
+  const truncateDescription = (description, length) => {
     if (!description) {
       return ''; // Return an empty string if description is undefined or null
     }
     return description.split(' ').slice(0, length).join(' ') + '...';
   };
-  
 
-// Log the full fasilitasList before applying any filters
-console.log('Full fasilitasList:', fasilitasList);
-
-// Filtering logic update
-const filteredFasilitas = fasilitasList.filter(fasilitas => {
-    // Check if 'nama' exists and matches the search term
+  // Filtering logic
+  const filteredFasilitas = fasilitasList.filter(fasilitas => {
     const hasValidName = fasilitas.nama && fasilitas.nama.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDusun = filterDusun === '' || fasilitas.dusun == filterDusun;
-  
+    const matchesDusun = filterDusun === '' || fasilitas.dusun === filterDusun;
     return hasValidName && matchesDusun;
   });
 
-// Log the filtered result
-console.log('Filtered fasilitasList:', filteredFasilitas);
 
 
   return (
@@ -116,34 +115,47 @@ console.log('Filtered fasilitasList:', filteredFasilitas);
         </Row>
 
         <Row>
-  {filteredFasilitas.map((fasilitas) => (
-    <Col md={4} key={fasilitas.id} className="mb-4">
-      <Card>
-        <Card.Img variant="top" 
-        
-        style={{ width: '500px', height: '250px', objectFit: 'cover' }}
-        src={fasilitas.thumbnail} alt={fasilitas.nama} />
-        <Card.Body>
-          <Card.Title>{fasilitas.nama}</Card.Title>
-          <Card.Text><strong>Dusun:</strong> {fasilitas.dusun || 'Tidak diketahui'}</Card.Text>
-          <Card.Text><strong>Alamat:</strong> {fasilitas.alamat || 'Tidak ada alamat yang tersedia'}</Card.Text>
-          <Card.Text><strong>Deskripsi:</strong> {truncateDescription(fasilitas.deskripsi, 20)}</Card.Text>
-        
-          <Link to={`/admin/fasilitas/${fasilitas.id}`}><Button variant="info" className="mr-2">Lihat Detail</Button></Link>
-          <Link to={`/admin/fasilitas/${fasilitas.id}/modifikasi`}>
-              <Button variant="warning">Modifikasi</Button>
-          </Link>
-        </Card.Body>
-      </Card>
-    </Col>
-  ))}
-  {filteredFasilitas.length === 0 && (
-    <Col>
-      <p className="text-center">Tidak ada fasilitas yang ditemukan.</p>
-    </Col>
-  )}
-</Row>
+          {filteredFasilitas.map((fasilitas) => (
+            <Col md={4} key={fasilitas.id} className="mb-4">
+              <Card>
+                <Card.Img
+                  variant="top"
+                  style={{ width: '500px', height: '250px', objectFit: 'cover' }}
+                  src={fasilitas.thumbnail}
+                  alt={fasilitas.nama}
+                />
+                <Card.Body>
+                  <Card.Title>{fasilitas.nama}</Card.Title>
+                  <Card.Text> {fasilitas.dusun.toUpperCase() || 'Tidak diketahui'}</Card.Text>
+                  <Card.Text><strong>Alamat:</strong><br/> {fasilitas.alamat || 'Tidak ada alamat yang tersedia'}</Card.Text>
+                  <Card.Text><strong>Deskripsi:</strong><br/> {truncateDescription(fasilitas.deskripsi, 20)}</Card.Text>
 
+                  <Link to={`/admin/fasilitas/${fasilitas.id}`}>
+                    <Button variant="info" className="mr-2">Lihat Detail</Button>
+                  </Link>
+                  <Link to={`/admin/fasilitas/${fasilitas.id}/modifikasi`}>
+                    <Button variant="warning" className="mr-2">Modifikasi</Button>
+                  </Link>
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      if (window.confirm(`Apakah Anda yakin ingin menghapus fasilitas "${fasilitas.nama}"?`)) {
+                        deleteFasilitas(fasilitas.id);
+                      }
+                    }}
+                  >
+                    Hapus
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+          {filteredFasilitas.length === 0 && (
+            <Col>
+              <p className="text-center">Tidak ada fasilitas yang ditemukan.</p>
+            </Col>
+          )}
+        </Row>
       </Container>
     </>
   );

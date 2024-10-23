@@ -136,7 +136,7 @@ const ModifikasiSekolah = () => {
             });
 
             alert('Data berhasil diperbarui');
-            navigate('-1'); // Kembali ke halaman sebelumnya
+            navigate('/admin/sekolah'); // Kembali ke halaman sebelumnya
         } catch (error) {
             console.error('Error updating document:', error);
             alert('Gagal memperbarui data');
