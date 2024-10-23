@@ -119,7 +119,10 @@ console.log('Filtered fasilitasList:', filteredFasilitas);
   {filteredFasilitas.map((fasilitas) => (
     <Col md={4} key={fasilitas.id} className="mb-4">
       <Card>
-        <Card.Img variant="top" src={fasilitas.thumbnail} alt={fasilitas.nama} />
+        <Card.Img variant="top" 
+        
+        style={{ width: '500px', height: '250px', objectFit: 'cover' }}
+        src={fasilitas.thumbnail} alt={fasilitas.nama} />
         <Card.Body>
           <Card.Title>{fasilitas.nama}</Card.Title>
           <Card.Text><strong>Dusun:</strong> {fasilitas.dusun || 'Tidak diketahui'}</Card.Text>
