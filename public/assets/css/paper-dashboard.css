@@ -3563,6 +3563,7 @@ License - nucleoapp.com/license/
     -webkit-transition: all .34s;
     -moz-transition: all .34s; }
   .fixed-plugin .fa-cog {
+    display: hidden;
     color: #FFFFFF;
     padding: 10px;
     border-radius: 0 0 6px 6px;

@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 const KesehatanSekolah = () => {
   const [dataSekolah, setDataSekolah] = useState({});
-  const [kegiatanNames, setKegiatanNames] = useState({}); // To store kegiatan names by idkegiatan
+  const [kegiatanData, setKegiatanData] = useState({}); // To store kegiatan data including names and thumbnails
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,24 +20,27 @@ const KesehatanSekolah = () => {
           const data = doc.data();
           const idkegiatan = data.idkegiatan;
 
-          // Tambahkan id dokumen sekolah ke dalam data
+          // Add the school document ID to the data
           const sekolahWithId = { id: doc.id, ...data };
 
           if (!sekolahData[idkegiatan]) {
             sekolahData[idkegiatan] = [];
           }
-          sekolahData[idkegiatan].push(sekolahWithId); // Push sekolah dengan id
+          sekolahData[idkegiatan].push(sekolahWithId); // Push the school data with ID
         });
         setDataSekolah(sekolahData);
 
-        // Fetch data from 'kegiatansekolahs' to get names of kegiatan
+        // Fetch data from 'kegiatansekolahs' to get names and thumbnails of kegiatan
         const kegiatanSnapshot = await getDocs(collection(db, "kegiatansekolahs"));
-        const kegiatanNamesData = {};
+        const kegiatanDataMap = {};
         kegiatanSnapshot.forEach((doc) => {
           const kegiatanData = doc.data();
-          kegiatanNamesData[doc.id] = kegiatanData.title; // Store title by idkegiatan
+          kegiatanDataMap[doc.id] = {
+            title: kegiatanData.title,
+            thumbnail: kegiatanData.thumbnail // Store thumbnail by idkegiatan
+          };
         });
-        setKegiatanNames(kegiatanNamesData);
+        setKegiatanData(kegiatanDataMap);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -56,15 +59,24 @@ const KesehatanSekolah = () => {
             {Object.keys(dataSekolah).map((idkegiatan) => (
               <Col md={6} className="mb-4" key={idkegiatan}>
                 <div className="p-4 bg-white shadow rounded hover-effect">
-                  {/* Header menggunakan nama kegiatan */}
-                  <h4 className="text-primary mb-3">
-                    {kegiatanNames[idkegiatan] || "Kegiatan Tidak Diketahui"}
-                  </h4>
+                  {/* Header using kegiatan name and thumbnail */}
+                  <div className="d-flex align-items-center mb-3">
+                    {kegiatanData[idkegiatan]?.thumbnail && (
+                      <img
+                        src={kegiatanData[idkegiatan].thumbnail}
+                        alt={`${kegiatanData[idkegiatan].title} thumbnail`}
+                        className="me-3"
+                        style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px' }}
+                      />
+                    )}
+                    <h4 className="text-primary pl-2 m-0">
+                       { kegiatanData[idkegiatan]?.title || "Kegiatan Tidak Diketahui"}
+                    </h4>
+                  </div>
                   <ListGroup>
-                    {/* Render nama sekolah */}
+                    {/* Render school names */}
                     {dataSekolah[idkegiatan].map((sekolah, index) => (
                       <ListGroup.Item key={index}>
-                        {/* Nama sekolah sebagai list item */}
                         <Link to={`/kesehatan-sekolah/${sekolah.id}`}>{sekolah.nama}</Link> 
                       </ListGroup.Item>
                     ))}

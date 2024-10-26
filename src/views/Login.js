@@ -58,7 +58,7 @@ const Login = () => {
         <Col md={6} lg={4} className="mx-auto">
           <Card className="shadow-lg">
             <Card.Body>
-              <h2 className="text-center mb-4">Login</h2>
+              <h5 className="text-center mb-4">Login (Administrator)</h5>
               
               {/* Pesan sukses setelah register */}
               {location.state && location.state.message && (
@@ -91,11 +91,11 @@ const Login = () => {
                   Login
                 </Button>
               </Form>
-              <div className="text-center mt-3">
+              {/* <div className="text-center mt-3">
                 <small>
                   Don't have an account? <a href="/register">Register</a>
                 </small>
-              </div>
+              </div> */}
             </Card.Body>
           </Card>
         </Col>

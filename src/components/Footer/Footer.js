@@ -40,7 +40,7 @@ function Footer(props) {
           <div className="credits ml-auto">
             <div className="copyright">
               &copy; Copyright {1900 + new Date().getYear()} , Made by 
-                 Tegar Deyustian (UM 22 CS Student / Fullstack Developer / Unpaid Programmer )
+                 Sahabat Srigading (KKN MBKM MD UM 2024 )
             </div>
           </div>
         </Row>

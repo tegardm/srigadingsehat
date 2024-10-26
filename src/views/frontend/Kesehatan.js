@@ -6,11 +6,6 @@ import Footer from 'components/Footer/Footer';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/firebase"; // Pastikan firebase diimport dengan benar
 
-// Fungsi untuk membuat URL dinamis berdasarkan nama dusun dan kegiatan
-const generateLink = (dusun, kegiatan) => {
-  return `/kesehatan/${dusun.toLowerCase()}/${kegiatan.toLowerCase().replace(/\s+/g, '-')}`;
-};
-
 // Daftar nama dusun yang akan selalu ditampilkan
 const DUSUN_LIST = ['mendek', 'krajan', 'gading', 'jeruk'];
 
@@ -27,14 +22,9 @@ const KesehatanDesa = () => {
           ...doc.data() // Spread the rest of the document data
         }));
   
-        // Debugging: Print fetched data to console
-        console.log('Fetched Kesehatan List:', kesehatanList);
-  
-        // Mengelompokkan data berdasarkan dusun dengan pengecekan lebih ketat
+        // Mengelompokkan data berdasarkan dusun
         const groupedByDusun = kesehatanList.reduce((result, current) => {
           const dusun = current.dusun ? current.dusun.toLowerCase() : null;  // Cek langsung pada field dusun
-  
-          console.log(`Processing dusun: ${dusun}`); // Debugging
   
           if (dusun && DUSUN_LIST.includes(dusun)) {  // Jika dusun ada dan termasuk dalam DUSUN_LIST
             if (!result[dusun]) {
@@ -45,9 +35,6 @@ const KesehatanDesa = () => {
   
           return result;
         }, {});
-  
-        // Debugging: Print grouped data to console
-        console.log('Grouped By Dusun:', groupedByDusun);
   
         setDataKesehatan(groupedByDusun);
       } catch (err) {
@@ -76,8 +63,17 @@ const KesehatanDesa = () => {
                     {dataKesehatan[dusun]?.length > 0 ? (
                       dataKesehatan[dusun].map((kegiatan, idx) => (
                         <ListGroup.Item key={idx}>
-                          <Link to={`/kesehatan/${dusun}/${kegiatan.id}`} className="text-decoration-none">
-                            {kegiatan.title}
+                          <Link to={`/kesehatan/${dusun}/${kegiatan.id}`} className="text-decoration-none d-flex align-items-center">
+                            {/* Menampilkan thumbnail jika ada */}
+                            {kegiatan.thumbnail && (
+                              <img
+                                src={kegiatan.thumbnail}
+                                alt={kegiatan.title}
+                                className="mr-3"
+                                style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px' }}
+                              />
+                            )}
+                            <span>{kegiatan.title.toUpperCase()}</span>
                           </Link>
                         </ListGroup.Item>
                       ))
@@ -92,7 +88,6 @@ const KesehatanDesa = () => {
         </Container>
       </div>
       <hr />
-
       <Footer />
     </>
   );

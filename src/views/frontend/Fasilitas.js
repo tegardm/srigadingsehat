@@ -33,6 +33,11 @@ const FasilitasDesa = () => {
     fetchFasilitasData();
   }, []);
 
+  const truncateText = (text, maxLength) => {
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+  };
+
+
   const filteredFasilitas = fasilitasList.filter(fasilitas => {
     const matchesDusun = selectedDusun ? fasilitas.dusun.toLowerCase() === selectedDusun.toLowerCase() : true;
     const matchesSearchTerm = fasilitas.nama.toLowerCase().includes(searchTerm.toLowerCase());
@@ -86,7 +91,7 @@ const FasilitasDesa = () => {
                     />
                     <Card.Body>
                       <Card.Title>{fasilitas.nama}</Card.Title>
-                      <Card.Text>{fasilitas.deskripsi}</Card.Text>
+                      <Card.Text>{truncateText(fasilitas.deskripsi,200)}</Card.Text>
                       <Link to={`/fasilitas/${fasilitas.id}`} className="btn btn-success">
                         Lihat Detail
                       </Link>

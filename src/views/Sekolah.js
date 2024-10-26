@@ -85,7 +85,7 @@ const handleDelete = async (id) => {
       <Link to={`/admin/sekolah/tambah`}>
         <Button variant="success" className="mr-2">Tambah Kegiatan</Button>
       </Link>
-      <h2 className="mb-4">Data Kegiatan Kesehatan Sekolah Desa Srigading 2</h2>
+      <h2 className="mb-4">Data Kegiatan Kesehatan Sekolah</h2>
       {error && <p>Error: {error}</p>}
       
       <Row>
