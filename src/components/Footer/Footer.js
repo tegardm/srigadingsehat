@@ -30,7 +30,7 @@ function Footer(props) {
           <nav className="footer-nav">
             <ul>
               <li>
-                <a href="https://www.instagram.com/tegar_deyustian/" target="_blank">
+                <a href="https://www.instagram.com/kknmd_um_srigading/" target="_blank">
                   Contact Developer
                 </a>
               </li>
