@@ -3,6 +3,8 @@ import { collection, getDocs, deleteDoc, query, where, writeBatch, getFirestore,
 import { db } from "../firebase/firebase";
 import { Link, useParams } from "react-router-dom";
 import { Card, Row, Col, Button } from "react-bootstrap"; // Import React Bootstrap components
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Import icons
 
 function Sekolah() {
   const [kegiatanData, setKegiatanData] = useState([]);
@@ -105,12 +107,12 @@ const handleDelete = async (id) => {
                     {truncateText(kegiatan.description, 20) || "Deskripsi tidak tersedia"}
                   </Card.Text>
                   <Link to={`/admin/sekolah/${kegiatan.id}`}>
-                    <Button variant="success" className="mr-2">Lihat Kegiatan</Button>
+                    <Button variant="success" className="mr-2"> <FontAwesomeIcon icon={faEye} /></Button>
                   </Link>
                   <Link to={`/admin/sekolah/${kegiatan.id}/modifikasi`}>
-                    <Button variant="warning" className="mr-2">Modifikasi Kegiatan</Button>
+                    <Button variant="warning" className="mr-2"><FontAwesomeIcon icon={faEdit} /></Button>
                   </Link>
-                  <Button variant="danger" onClick={() => handleDelete(kegiatan.id)}>Hapus Kegiatan</Button>
+                  <Button variant="danger" onClick={() => handleDelete(kegiatan.id)}><FontAwesomeIcon icon={faTrash} /> </Button>
                 </Card.Body>
               </Card>
             </Col>

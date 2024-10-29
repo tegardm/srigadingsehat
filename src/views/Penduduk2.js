@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import $ from 'jquery';
 import 'datatables.net';
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { collection, getDocs, query, where, deleteDoc, doc, addDoc } from "firebase/firestore";
 import { db } from '../firebase/firebase';
 import * as XLSX from 'xlsx';
@@ -65,12 +65,15 @@ function PendudukKategori2() {
     setFile(event.target.files[0]);
   };
 
+  const navigate = useNavigate();
+
+
   const handleFileUpload = async () => {
     if (!file) {
       showAlert("Please select a file to upload.", "danger");
       return;
     }
-
+  
     const reader = new FileReader();
     reader.onload = async (e) => {
       const data = new Uint8Array(e.target.result);
@@ -78,21 +81,27 @@ function PendudukKategori2() {
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
+  
       for (const row of jsonData) {
         const { nama, nik, alamat, jenis_kelamin, usia, dusun, kategori } = row;
-
+  
+        // Konversi `nik` ke string jika belum
+        const nikString = nik.toString();
+  
+        // Mengubah jenis kelamin dari "L" menjadi "Laki-laki" dan "P" menjadi "Perempuan"
+        const jenisKelaminFormatted = jenis_kelamin === "L" ? "Laki-laki" : jenis_kelamin === "P" ? "Perempuan" : jenis_kelamin;
+  
         if (!validDusun.includes(dusun)) {
           showAlert(`Dusun "${dusun}" tidak valid. Hanya dapat memilih: ${validDusun.join(', ')}`, "danger");
           return;
         }
-
+  
         try {
           await addDoc(collection(db, "penduduks"), {
             nama,
-            nik,
+            nik: nikString,  // Pastikan NIK disimpan sebagai string
             alamat,
-            jenis_kelamin,
+            jenis_kelamin: jenisKelaminFormatted,  // Menyimpan jenis kelamin yang sudah diformat
             usia,
             dusun,
             kategori
@@ -107,6 +116,9 @@ function PendudukKategori2() {
     };
     reader.readAsArrayBuffer(file);
   };
+  
+  
+  
 
   const showAlert = (message, type) => {
     setAlert({ message, type });

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
 import {
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
   CardTitle,
@@ -14,9 +12,6 @@ import {
   collection,
   getDocs,
 } from "firebase/firestore";
-import {
-  dashboard24HoursPerformanceChart,
-} from "variables/charts.js";
 
 function Dashboard() {
   const [data, setData] = useState({
@@ -137,30 +132,6 @@ function Dashboard() {
               </CardBody>
               <CardFooter>
                 <hr />
-              </CardFooter>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col md="12">
-            <Card>
-              <CardHeader>
-                <CardTitle tag="h5">Users Behavior</CardTitle>
-                <p className="card-category">24 Hours performance</p>
-              </CardHeader>
-              <CardBody>
-                <Line
-                  data={dashboard24HoursPerformanceChart.data}
-                  options={dashboard24HoursPerformanceChart.options}
-                  width={400}
-                  height={100}
-                />
-              </CardBody>
-              <CardFooter>
-                <hr />
-                <div className="stats">
-                  <i className="fa fa-history" /> Updated 3 minutes ago
-                </div>
               </CardFooter>
             </Card>
           </Col>
