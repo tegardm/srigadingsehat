@@ -1,85 +1,146 @@
 import { useEffect, useState } from "react";
-import $ from 'jquery'; // Import jQuery
-import 'datatables.net'; // Import DataTables jQuery Plugin
+import $ from 'jquery';
+import 'datatables.net';
 import { Link, useParams } from "react-router-dom";
-import { collection, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
-import { db } from '../firebase/firebase'; // Make sure this imports your Firebase configuration
+import { collection, getDocs, query, where, deleteDoc, doc, addDoc } from "firebase/firestore";
+import { db } from '../firebase/firebase';
+import * as XLSX from 'xlsx';
 
 function PendudukKategori2() {
-  const { namadusun, kategori } = useParams(); // Get both namadusun and kategori from the URL
+  const { namadusun, kategori } = useParams();
   const [dataWarga, setDataWarga] = useState([]);
   const [error, setError] = useState(null);
+  const [file, setFile] = useState(null);
+  const [alert, setAlert] = useState(null); // Alert state
+
+  const validDusun = ["krajan", "mendek", "jeruk", "gading"];
 
   useEffect(() => {
     const fetchDusunData = async () => {
       try {
-        // Log the parameters to check if they are being received correctly
-        console.log('Fetching data for dusun:', namadusun, 'kategori:', kategori);
-  
-        // Create a query to filter data by 'dusun' and 'kategori'
         const dusunQuery = query(
           collection(db, "penduduks"),
           where("dusun", "==", namadusun),
           where("kategori", "==", kategori)
         );
-        
-        // Fetch the filtered data
+
         const querySnapshot = await getDocs(dusunQuery);
         const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id, // Save the document ID for deletion
+          id: doc.id,
           ...doc.data()
         }));
-  
-        // Log the fetched data to check if any data is retrieved
-        console.log('Data fetched:', data);
-        
-        setDataWarga(data); // Update the state with the filtered data
+
+        setDataWarga(data);
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching dusun data: ", err);
       }
     };
-  
-    fetchDusunData(); // Call the fetch function
-  }, [namadusun, kategori]); // Refetch data if these parameters change
-  
-  // Initialize DataTables after data is loaded
+
+    fetchDusunData();
+  }, [namadusun, kategori]);
+
   useEffect(() => {
     if (dataWarga.length > 0) {
-      const table = $('#pendudukTable').DataTable(); // Initialize DataTable
-      
-      return () => {
-        // Destroy DataTable before component unmount or re-render
-        table.destroy();
-      };
+      const table = $('#pendudukTable').DataTable();
+      return () => table.destroy();
     }
   }, [dataWarga]);
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm('Apakah Anda yakin ingin menghapus data penduduk ini?');
-    if (!confirmDelete) return; // Exit if user does not confirm
+    if (!confirmDelete) return;
 
     try {
-      // Delete the document from Firestore
       const pendudukRef = doc(db, 'penduduks', id);
       await deleteDoc(pendudukRef);
-
-      // Remove the deleted record from the state to update the table
       setDataWarga(dataWarga.filter((warga) => warga.id !== id));
-
-      alert('Data penduduk berhasil dihapus!');
+      showAlert('Data penduduk berhasil dihapus!', 'success');
     } catch (error) {
       console.error("Error deleting document: ", error);
-      alert('Terjadi kesalahan saat menghapus data penduduk.');
+      showAlert('Terjadi kesalahan saat menghapus data penduduk.', 'danger');
     }
   };
 
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleFileUpload = async () => {
+    if (!file) {
+      showAlert("Please select a file to upload.", "danger");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      for (const row of jsonData) {
+        const { nama, nik, alamat, jenis_kelamin, usia, dusun, kategori } = row;
+
+        if (!validDusun.includes(dusun)) {
+          showAlert(`Dusun "${dusun}" tidak valid. Hanya dapat memilih: ${validDusun.join(', ')}`, "danger");
+          return;
+        }
+
+        try {
+          await addDoc(collection(db, "penduduks"), {
+            nama,
+            nik,
+            alamat,
+            jenis_kelamin,
+            usia,
+            dusun,
+            kategori
+          });
+        } catch (error) {
+          console.error("Error uploading document: ", error);
+          showAlert("Error uploading some data.", "danger");
+          return;
+        }
+      }
+      showAlert('Data berhasil diunggah!', 'success');
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert(null), 3000); // Clear alert after 3 seconds
+  };
+
   return (
-    <div className="content">
-      <h2>Data Penduduk Kategori {kategori} di Dusun {namadusun}</h2>
-      {error && <p>Error: {error}</p>}
+    <>
+    <br/><br/>
+    <div className="container mt-5">
+      <h2 className="mb-4">Data Penduduk Kategori {kategori} di Dusun {namadusun}</h2>
       
-      <table id="pendudukTable" className="display">
+      {alert && (
+        <div className={`alert alert-${alert.type}`} role="alert">
+          {alert.message}
+        </div>
+      )}
+
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      {/* File input and submit button for uploading Excel file */}
+      <div className="mb-3">
+        <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} className="form-control-file mb-2" />
+        <button onClick={handleFileUpload} className="btn btn-primary">Upload Data</button>
+        <br/>
+        <small className="w-50">Gunakan Tombol Diatas Untuk Mengunggah Data Besar Berformat Excel (xlsx), jika upload gagal atau tidak berhasil masuk
+          ke dalam List penduduk artinya format di Excel anda tidak benar, silahkan sesuai dengan contoh gambar dibawah
+        </small>
+        <br/>
+        <img className="w-75 border" src="/assets/img/format.png"></img>
+        <br/><br/><hr className='background-black color-black' />
+
+      </div>
+      <table id="pendudukTable" className="table table-striped">
         <thead>
           <tr>
             <th>Nama</th>
@@ -94,22 +155,22 @@ function PendudukKategori2() {
         </thead>
         
         <tbody>
-          {dataWarga && dataWarga.length > 0 ? (
+          {dataWarga.length > 0 ? (
             dataWarga.map((warga, index) => (
               <tr key={index}>
                 <td>{warga.nama}</td>
                 <td>{warga.nik}</td>
                 <td>{warga.alamat}</td>
-                <td>{warga.jenisKelamin}</td>
+                <td>{warga.jenis_kelamin}</td>
                 <td>{warga.usia}</td>
                 <td>{warga.dusun}</td>
                 <td>{warga.kategori}</td>
                 <td>
                   <Link to={`/admin/penduduk/${namadusun}/kategori/${kategori}/${warga.nik}/modifikasi`}>
-                    <button className="p-2 m-2 bg-success rounded-lg text-white border-0">Modifikasi</button>
+                    <button className="btn btn-success btn-sm mr-2">Modifikasi</button>
                   </Link>
                   <button
-                    className="p-2 m-2 bg-warning rounded-lg text-white border-0"
+                    className="btn btn-danger btn-sm"
                     onClick={() => handleDelete(warga.id)}
                   >
                     Delete
@@ -119,12 +180,13 @@ function PendudukKategori2() {
             ))
           ) : (
             <tr>
-              <td colSpan="8">Tidak ada data untuk dusun ini.</td>
+              <td colSpan="8" className="text-center">Tidak ada data untuk dusun ini.</td>
             </tr>
           )}
         </tbody>
       </table>
     </div>
+    </>
   );
 }
 

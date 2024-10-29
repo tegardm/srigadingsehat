@@ -27,7 +27,7 @@ const LandingPage = () => {
             </Col>
             <Col md={6} className="mt-4 mt-md-0">
               <img
-                src="./assets/img/satu.jpeg"
+                src="./assets/img/baldes.jpeg"
                 alt="Kesehatan Desa"
                 className="img-fluid rounded shadow-lg"
                 style={{ borderRadius: '15px' }}
@@ -49,7 +49,7 @@ const LandingPage = () => {
       {/* Custom CSS */}
       <style jsx="true">{`
         .hero-section {
-          background: linear-gradient(135deg, rgba(0, 123, 85, 0.7), rgba(102, 230, 184, 0.5)), url('./assets/img/satu.jpeg');
+          background: linear-gradient(135deg, rgba(0, 123, 85, 0.7), rgba(102, 230, 184, 0.5)), url('./assets/img/baldes.jpeg');
           background-size: cover;
           background-position: center;
           position: relative;
