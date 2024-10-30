@@ -80,16 +80,17 @@ function Sidebar(props) {
 
   {/* Tampilkan tombol Logout hanya jika user sudah login */}
   {isLoggedIn && (
-    <li className="nav-item">
+      <li className="nav-item">
       <button
-        onClick={handleLogout} // Panggil fungsi handleLogout saat tombol diklik
-        className="nav-NavLink btn btn-danger w-100"
-        style={{ marginTop: "10px" }}
+        onClick={handleLogout}
+        className="nav-NavLink btn btn-danger w-100 d-flex align-items-center justify-content-left" // Menambahkan flex untuk mengatur layout
+        style={{ marginTop: "10px", gap: "8px" }} // Menambahkan gap antara ikon dan teks
       >
         <i className="nc-icon nc-button-power" />
-        <p>Logout</p>
+        <span>Logout</span>
       </button>
     </li>
+    
   )}
 </Nav>
 
