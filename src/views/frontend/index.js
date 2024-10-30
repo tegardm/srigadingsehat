@@ -21,9 +21,7 @@ const LandingPage = () => {
               <p className="lead mt-3">
                 Informasi kesehatan dan layanan medis untuk masyarakat Desa Srigading. Kami siap membantu Anda dengan layanan terbaik.
               </p>
-              <Button variant="success" href="#learn-more" className="mt-4 px-4 py-2" style={{ borderRadius: '30px' }}>
-                Pelajari Lebih Lanjut
-              </Button>
+             
             </Col>
             <Col md={6} className="mt-4 mt-md-0">
               <img
@@ -49,7 +47,7 @@ const LandingPage = () => {
       {/* Custom CSS */}
       <style jsx="true">{`
         .hero-section {
-          background: linear-gradient(135deg, rgba(0, 123, 85, 0.7), rgba(102, 230, 184, 0.5)), url('./assets/img/baldes.jpeg');
+          background: linear-gradient(135deg, rgba(0, 123, 85, 0.85), rgba(102, 230, 184, 0.5)), url('./assets/img/baldes.jpeg');
           background-size: cover;
           background-position: center;
           position: relative;
