@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Card, Row, Col, Button, Form, InputGroup } from "react-bootstrap";
-import { db } from "../firebase/firebase"; // Import Firestore configuration
-import { collection, getDocs, query, where } from "firebase/firestore"; // Firestore functions
+import { db } from "../firebase/firebase";
+import { collection, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 function Lingkungan() {
   const [kegiatanData, setKegiatanData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState(null);
-  const { namadusun } = useParams(); // Get dusun from params if needed
+  const { namadusun } = useParams();
 
   useEffect(() => {
-    // Fetch kegiatan data from Firestore
+    // Fungsi untuk mengambil data kegiatan dari Firestore
     const fetchKegiatanData = async () => {
       try {
-        const q = query(collection(db, "lingkungans")); // Fetch only data for the specified dusun
+        const q = query(collection(db, "lingkungans"));
         const querySnapshot = await getDocs(q);
 
         const data = querySnapshot.docs.map(doc => ({
@@ -24,13 +26,13 @@ function Lingkungan() {
 
         setKegiatanData(data);
       } catch (err) {
-        setError("Failed to fetch data from Firestore.");
+        setError("Gagal mengambil data dari Firestore.");
         console.error("Error fetching kegiatan data: ", err);
       }
     };
 
     fetchKegiatanData();
-  }, [namadusun]); // Fetch data based on dusun
+  }, [namadusun]);
 
   // Fungsi untuk memotong deskripsi yang terlalu panjang
   const truncateText = (text, maxLength) => {
@@ -42,18 +44,32 @@ function Lingkungan() {
     setSearchTerm(e.target.value);
   };
 
-  // Filter kegiatan berdasarkan search term
-// Filter kegiatan berdasarkan search term
-const filteredKegiatan = kegiatanData.filter((kegiatan) =>
-  kegiatan.title?.toLowerCase().includes(searchTerm.toLowerCase())
-);
+  // Fungsi untuk menghapus kegiatan berdasarkan ID dengan konfirmasi
+  const deleteKegiatan = async (id) => {
+    const confirmDelete = window.confirm("Apakah Anda yakin ingin menghapus kegiatan ini?");
+    if (!confirmDelete) return; // Jika pengguna membatalkan, tidak lakukan apa-apa
 
+    try {
+      await deleteDoc(doc(db, "lingkungans", id)); // Hapus dokumen berdasarkan ID
+      setKegiatanData(prevData => prevData.filter(kegiatan => kegiatan.id !== id)); // Perbarui state setelah penghapusan
+    } catch (err) {
+      setError("Gagal menghapus data.");
+      console.error("Error deleting kegiatan: ", err);
+    }
+  };
+
+  // Filter kegiatan berdasarkan search term
+  const filteredKegiatan = kegiatanData.filter((kegiatan) =>
+    kegiatan.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="content">
       <h2 className="mb-4">Data Kegiatan Lingkungan Desa {namadusun}</h2>
       <Link to={`/admin/lingkungan/tambah`}>
-        <Button variant="success" className="mb-3">Tambah Kegiatan</Button>
+        <Button variant="success" className="mb-3">
+          <FontAwesomeIcon icon={faPlus} /> Tambah Kegiatan
+        </Button>
       </Link>
       {error && <p className="text-danger">{error}</p>}
 
@@ -73,25 +89,20 @@ const filteredKegiatan = kegiatanData.filter((kegiatan) =>
             <Col md={6} key={index} className="mb-4">
               <Card>
                 {kegiatan.thumbnail && (
-                  <Card.Img variant="top" src={kegiatan.thumbnail} style={{ width: "600px", height: "320px", objectFit: "cover" }}
-
-                   alt={kegiatan.title} />
+                  <Card.Img variant="top" src={kegiatan.thumbnail} style={{ width: "600px", height: "320px", objectFit: "cover" }} alt={kegiatan.title} />
                 )}
                 <Card.Body>
                   <Card.Title>{kegiatan.title ? kegiatan.title : "Nama kegiatan tidak diketahui"}</Card.Title>
-                  <Card.Text>
-                  {kegiatan.dusun.toUpperCase()}
-                  </Card.Text>
-                  <Card.Text>
-                    {truncateText(kegiatan.description ? kegiatan.description : "Deskripsi tidak tersedia", 100)}
-                  </Card.Text>
+                  <Card.Text>{kegiatan.dusun.toUpperCase()}</Card.Text>
+                  <Card.Text>{truncateText(kegiatan.description ? kegiatan.description : "Deskripsi tidak tersedia", 100)}</Card.Text>
                  
                   <Link to={`/admin/lingkungan/${kegiatan.id}`}>
-                    <Button variant="success" className="mr-2">Lihat Kegiatan</Button>
+                    <Button variant="success" className="mr-2"><FontAwesomeIcon icon={faEye} /></Button>
                   </Link>
                   <Link to={`/admin/lingkungan/${kegiatan.id}/modifikasi`}>
-                    <Button variant="warning" className="mr-2">Modifikasi</Button>
+                    <Button variant="warning" className="mr-2"><FontAwesomeIcon icon={faEdit} /></Button>
                   </Link>
+                  <Button variant="danger" onClick={() => deleteKegiatan(kegiatan.id)}><FontAwesomeIcon icon={faTrash} /></Button>
                 </Card.Body>
               </Card>
             </Col>
