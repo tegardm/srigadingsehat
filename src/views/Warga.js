@@ -55,7 +55,7 @@ function Desa() {
                       <Button variant="success" className="btn-block">Lihat Kegiatan</Button>
                     </Link>
                     <Link to={`/admin/desa/${dusun.nama}/modifikasi`}>
-                      <Button variant="warning" className="btn-block">Modifikasi Desa</Button>
+                      <Button variant="warning" className="btn-block">Modifikasi Dusun</Button>
                     </Link>
                   </div>
                 </Card.Body>

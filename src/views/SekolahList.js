@@ -3,6 +3,8 @@ import { Link, useParams } from "react-router-dom";
 import { Card, Row, Col, Button, Form, Alert } from "react-bootstrap";
 import { db } from "../firebase/firebase";
 import { collection, query, where, getDocs, doc, getDoc, deleteDoc } from "firebase/firestore"; // Import Firestore functions
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Import icons
 
 function SekolahList() {
   const [sekolahData, setSekolahData] = useState([]);
@@ -118,16 +120,16 @@ function SekolahList() {
                   <Card.Text>{truncateText(sekolah.kegiatan.description, 15)}</Card.Text>
                   <Link to={`/admin/sekolah/${idkegiatan}/${sekolah.id}`}>
                     <Button variant="success" className="mr-2">
-                      Lihat Kegiatan
+                    <FontAwesomeIcon icon={faEye} />
                     </Button>
                   </Link>
                   <Link to={`/admin/sekolah/${idkegiatan}/${sekolah.id}/modifikasi`}>
                     <Button variant="warning" className="mr-2">
-                      Modifikasi
+                    <FontAwesomeIcon icon={faEdit} />
                     </Button>
                   </Link>
                   <Button variant="danger" onClick={() => handleDelete(sekolah.id)}>
-                    Hapus
+                  <FontAwesomeIcon icon={faTrash} />
                   </Button>
                 </Card.Body>
               </Card>

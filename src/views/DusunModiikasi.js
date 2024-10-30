@@ -9,7 +9,7 @@ const DusunModifikasi = () => {
     const [formData, setFormData] = useState({
         nama: '',
         alamat: '',
-        jumlah_penduduk: '',
+        jumlah_penduduk: 0, // Inisialisasi dengan 0
         balita: '',
         anak: '',
         remaja: '',
@@ -34,10 +34,17 @@ const DusunModifikasi = () => {
                     const docData = querySnapshot.docs[0];
                     const data = docData.data();
                     setDocumentId(docData.id);
+
+                    // Ambil jumlah penduduk berdasarkan koleksi penduduks
+                    const penduduksRef = collection(db, 'penduduks');
+                    const penduduksQuery = query(penduduksRef, where('dusun', '==', namadusun));
+                    const penduduksSnapshot = await getDocs(penduduksQuery);
+                    const jumlahPenduduk = penduduksSnapshot.size; // Hitung jumlah dokumen
+
                     setFormData({
                         nama: data.nama || '',
                         alamat: data.alamat || '',
-                        jumlah_penduduk: data.jumlah_penduduk || '',
+                        jumlah_penduduk: jumlahPenduduk, // Set jumlah penduduk
                         balita: data.balita || '',
                         anak: data.anak || '',
                         remaja: data.remaja || '',

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Card, ListGroup, Row, Col, Spinner, Alert } from 'react-bootstrap';
-import { db } from '../firebase/firebase'; // Adjust the import according to your file structure
+import { Container, Card, ListGroup, Row, Col, Spinner, Alert, Button, Table } from 'react-bootstrap';
+import { db } from '../firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { useParams } from 'react-router-dom'; // Assuming you're using react-router for routing
+import { useParams } from 'react-router-dom';
 
 const FasilitasDetail = () => {
-    const { idFasilitas } = useParams(); // Get the idFasilitas from the URL parameters
+    const { idFasilitas } = useParams();
     const [fasilitas, setFasilitas] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,90 +13,135 @@ const FasilitasDetail = () => {
     useEffect(() => {
         const fetchFasilitas = async () => {
             try {
-                const docRef = doc(db, 'fasilitas', idFasilitas); // Reference to the document
-                const docSnap = await getDoc(docRef); // Fetch the document
+                const docRef = doc(db, 'fasilitas', idFasilitas);
+                const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
-                    setFasilitas(docSnap.data()); // Set the fetched data
+                    setFasilitas(docSnap.data());
                 } else {
                     setError("Fasilitas tidak ditemukan.");
                 }
             } catch (err) {
                 setError("Terjadi kesalahan saat mengambil data.");
             } finally {
-                setLoading(false); // Set loading to false after fetching data
+                setLoading(false);
             }
         };
 
         fetchFasilitas();
-    }, [idFasilitas]); // Run the effect when idFasilitas changes
+    }, [idFasilitas]);
 
     if (loading) {
-        return <Spinner animation="border" />;
+        return (
+            <Container className="text-center my-5">
+                <Spinner animation="border" variant="primary" size="lg" />
+                <p className="mt-3">Memuat data fasilitas...</p>
+            </Container>
+        );
     }
 
     if (error) {
-        return <Alert variant="danger">{error}</Alert>;
+        return <Alert variant="danger" className="my-4 text-center">{error}</Alert>;
     }
 
     if (!fasilitas) {
-        return <Alert variant="warning">Data fasilitas tidak tersedia.</Alert>;
+        return <Alert variant="warning" className="my-4 text-center">Data fasilitas tidak tersedia.</Alert>;
     }
 
     return (
-        <>
-        <br></br><br></br><br></br>
-            <Container className="mt-4">
-                <Card>
-                    <Card.Header as="h5">{fasilitas.nama}</Card.Header>
-                    <Card.Body>
-                        <Row>
-                            <Col md={4}>
-                                <Card.Img
-                                    variant="top"
-                                    src={fasilitas.thumbnail}
-                                    alt="Thumbnail Fasilitas"
-                                    style={{ width: '100%', height: 'auto' }}
-                                />
-                            </Col>
-                            <Col md={8}>
-                                <Card.Title className="mt-2">Detail Fasilitas Kesehatan</Card.Title>
-                                <Card.Text>
-                                    <strong>Alamat:</strong> <br /> {fasilitas.alamat}
-                                </Card.Text>
-                                <Card.Text>
-                                    <strong>Kontak Petugas Kesehatan:</strong> <br />
-                                    <a href={`https://wa.me/${fasilitas.cp_petugas.replace(/-/g, '')}`} target="_blank" rel="noopener noreferrer">
-                                        {fasilitas.cp_petugas}
-                                    </a>
-                                </Card.Text>
-                                <Card.Text>
-                                    <strong>Jam Operasional:</strong> <br />
-                                    <ul>
-                                        {fasilitas.jam_operasional.hariBuka.map((hari, index) => (
-                                            <li key={index}>
-                                                {hari}: {fasilitas.jam_operasional.waktuBuka} - {fasilitas.jam_operasional.waktuTutup}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </Card.Text>
-                            </Col>
-                        </Row>
-                        <Card.Text className="mt-3">
-                            <strong>Deskripsi:</strong> <br /> {fasilitas.deskripsi}
-                        </Card.Text>
-                        <Card.Text>
-                            <strong>Layanan yang Tersedia:</strong>
-                        </Card.Text>
-                        <ListGroup>
-                            {fasilitas.layanan.map((layanan, index) => (
-                                <ListGroup.Item key={index}>{layanan}</ListGroup.Item>
-                            ))}
-                        </ListGroup>
-                    </Card.Body>
-                </Card>
-            </Container>
-        </>
+       <>
+       <br/><br/>
+        <Container className="mt-5 mb-5">
+            <Card className="shadow-lg border-0 rounded-3">
+                <Card.Header className="bg-dark text-white text-center">
+                    <h3>{fasilitas.nama}</h3>
+                </Card.Header>
+                <Card.Body className="p-4">
+                    <Row className="align-items-center">
+                        {/* Section Thumbnail */}
+                        <Col md={5} className="text-center">
+                            <Card.Img
+                                src={fasilitas.thumbnail}
+                                alt="Thumbnail Fasilitas"
+                                className="rounded mb-4"
+                                style={{ width: '100%', height: 'auto', maxHeight: '300px', objectFit: 'cover' }}
+                            />
+                         
+                        </Col>
+
+                        {/* Section Detail Info */}
+                        <Col md={7}>
+                            <h4 className="text-primary mb-3">Detail Fasilitas Kesehatan</h4>
+                            <Card.Text className="text-secondary mb-2">
+                                <strong>Alamat:</strong><br /> {fasilitas.alamat}
+                            </Card.Text>
+                            <Card.Text className="text-secondary mb-2">
+                                <strong>Kontak Petugas Kesehatan:</strong><br />
+                                <a
+                                    href={`https://wa.me/${fasilitas.cp_petugas.replace(/-/g, '')}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-decoration-none text-success"
+                                >
+                                    {fasilitas.cp_petugas}
+                                </a>
+                            </Card.Text>
+                            
+                            {/* Jam Operasional Table */}
+                            <strong><p className="text-secondary mt-4">Jam Operasional</p></strong>
+                            <Table bordered responsive="md" className="text-small mt-2">
+                                <thead className="table-dark">
+                                    <tr>
+                                        <th>Hari</th>
+                                        <th>Waktu Buka</th>
+                                        <th>Waktu Tutup</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {fasilitas.jam_operasional.hariBuka.map((hari, index) => (
+                                        <tr key={index}>
+                                            <td>{hari}</td>
+                                            <td>{fasilitas.jam_operasional.waktuBuka}</td>
+                                            <td>{fasilitas.jam_operasional.waktuTutup}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </Col>
+                    </Row>
+
+                    {/* Section Deskripsi */}
+                    <Row className="mt-4">
+                        <Col>
+                            <h5 className="text-secondary mb-3">Deskripsi</h5>
+                            <Card.Text>{fasilitas.deskripsi}</Card.Text>
+                        </Col>
+                    </Row>
+
+                    {/* Section Layanan */}
+                    <Row className="mt-4">
+                        <Col>
+                            <h5 className="text-secondary mb-3">Layanan yang Tersedia</h5>
+                            <ListGroup variant="flush" className="border rounded">
+                                {fasilitas.layanan.map((layanan, index) => (
+                                    <ListGroup.Item key={index} className="py-3">
+                                        {layanan}
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
+                        </Col>
+                    </Row>
+
+                    {/* Kembali ke Daftar Button */}
+                    <div className="text-center mt-4">
+                        <Button variant="primary" href="/daftar-fasilitas" className="px-4">
+                            Kembali ke Daftar Fasilitas
+                        </Button>
+                    </div>
+                </Card.Body>
+            </Card>
+        </Container>
+       </>
     );
 };
 

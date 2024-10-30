@@ -4,7 +4,7 @@ import { Navbar, Nav, Container } from 'react-bootstrap';
 
 const CustomNavbar = () => {
   return (
-    <Navbar bg="transparent" variant="light" expand="lg" className="py-3">
+    <Navbar bg="transparent" variant="light" expand="lg" className="p-3 ">
       <Container>
         <Navbar.Brand href="#home" className="font-weight-bold text-success">Srigading Sehat</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

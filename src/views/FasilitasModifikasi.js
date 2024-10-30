@@ -115,15 +115,15 @@ const FasilitasModifikasi = () => {
         e.preventDefault();
         setIsSubmitting(true);
         setError(null);
-
+    
         try {
-            let thumbnailUrl = null;
-
-            // Jika ada thumbnail file yang diupload, lakukan proses upload ke storage
-            if (fasilitas.thumbnail) {
+            let thumbnailUrl = fasilitas.thumbnail; // Pertahankan URL thumbnail saat ini jika tidak diunggah baru
+    
+            // Hanya lakukan upload jika file baru diunggah
+            if (fasilitas.thumbnail instanceof File) { 
                 const storageRef = ref(storage, `thumbnails/${fasilitas.thumbnail.name}`);
                 const uploadTask = uploadBytesResumable(storageRef, fasilitas.thumbnail);
-
+    
                 uploadTask.on(
                     'state_changed',
                     (snapshot) => {
@@ -149,17 +149,17 @@ const FasilitasModifikasi = () => {
             setIsSubmitting(false);
         }
     };
-
+    
     const saveFasilitasData = async (thumbnailUrl) => {
         try {
             const updatedFasilitas = {
                 ...fasilitas,
-                thumbnail: thumbnailUrl || fasilitas.thumbnail // Gunakan URL baru atau yang sudah ada
+                thumbnail: thumbnailUrl  // Gunakan URL baru atau yang sudah ada
             };
-
+    
             const fasilitasDocRef = doc(db, 'fasilitas', idFasilitas);
             await updateDoc(fasilitasDocRef, updatedFasilitas);
-
+    
             alert('Data Fasilitas berhasil diubah');
             navigate(-1);
         } catch (err) {
@@ -169,6 +169,9 @@ const FasilitasModifikasi = () => {
             setIsSubmitting(false);
         }
     };
+    
+
+ 
 
     return (
         <>
