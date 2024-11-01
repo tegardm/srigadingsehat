@@ -134,7 +134,7 @@ const FasilitasDetail = () => {
 
                     {/* Kembali ke Daftar Button */}
                     <div className="text-center mt-4">
-                        <Button variant="primary" href="/daftar-fasilitas" className="px-4">
+                        <Button variant="primary" href="/admin/fasilitas" className="px-4">
                             Kembali ke Daftar Fasilitas
                         </Button>
                     </div>

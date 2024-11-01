@@ -36,6 +36,29 @@
       sizes="76x76"
       href="/assets/img/favicon.ico"
     />
+    <style>
+      /* Pada elemen pembungkus untuk menghindari overflow */
+body, html {
+  overflow-x: hidden;
+}
+
+/* Atur ulang elemen navbar di layar kecil */
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 14px;
+  }
+
+  .navbar {
+    width: 100%;
+  }
+
+  .nav-item {
+    margin-left: 0;
+    padding: 0 8px; /* Mengurangi padding untuk nav-item */
+  }
+}
+
+    </style>
     <!--
             Notice the use of %PUBLIC_URL% in the tags above.
             It will be replaced with the URL of the `public` folder during the build.

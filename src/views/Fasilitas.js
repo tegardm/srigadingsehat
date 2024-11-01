@@ -119,7 +119,7 @@ const Fasilitas = () => {
                 />
                 <Card.Body>
                   <Card.Title>{fasilitas.nama}</Card.Title>
-                  <Card.Text> {fasilitas.dusun.toUpperCase() || 'Tidak diketahui'}</Card.Text>
+                  <Card.Text> <small>{fasilitas.dusun.toUpperCase() || 'Tidak diketahui'}</small></Card.Text>
                   <Card.Text><strong>Alamat:</strong><br/> {fasilitas.alamat || 'Tidak ada alamat yang tersedia'}</Card.Text>
                   <Card.Text><strong>Deskripsi:</strong><br/> {truncateDescription(fasilitas.deskripsi, 20)}</Card.Text>
 

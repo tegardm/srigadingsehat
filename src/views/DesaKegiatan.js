@@ -3,6 +3,8 @@ import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { Link, useParams } from "react-router-dom";
 import { Card, Row, Col, Button, Modal } from "react-bootstrap"; // Import React Bootstrap components
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'; // Import icons
 
 function DesaKegiatan() {
   const [kegiatanData, setKegiatanData] = useState([]);
@@ -87,12 +89,12 @@ function DesaKegiatan() {
                     {kegiatan.description ? truncateText(kegiatan.description, 20) : "Deskripsi tidak tersedia"}
                   </Card.Text>
                   <Link to={`/admin/desa/${namadusun}/kegiatan/${kegiatan.id}`}>
-                    <Button variant="success" className="mr-2">Lihat Kegiatan</Button>
+                    <Button variant="success" className="mr-2"><FontAwesomeIcon icon={faEye} /></Button>
                   </Link>
                   <Link to={`/admin/desa/${namadusun}/kegiatan/${kegiatan.id}/modifikasi`}>
-                    <Button variant="warning" className="mr-2">Modifikasi</Button>
+                    <Button variant="warning" className="mr-2"><FontAwesomeIcon icon={faEdit} /></Button>
                   </Link>
-                  <Button variant="danger" onClick={() => handleDeleteModal(kegiatan)}>Hapus</Button>
+                  <Button variant="danger" onClick={() => handleDeleteModal(kegiatan)}><FontAwesomeIcon icon={faTrash} /></Button>
                 </Card.Body>
               </Card>
             </Col>

@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Paper Dashboard React - v1.3.2
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-* Licensed under MIT (https://github.com/creativetimofficial/paper-dashboard-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -30,10 +12,6 @@ import {
   DropdownMenu,
   DropdownItem,
   Container,
-  InputGroup,
-  InputGroupText,
-  InputGroupAddon,
-  Input,
 } from "reactstrap";
 
 import routes from "routes.js";
@@ -44,6 +22,7 @@ function Header(props) {
   const [color, setColor] = React.useState("transparent");
   const sidebarToggle = React.useRef();
   const location = useLocation();
+
   const toggle = () => {
     if (isOpen) {
       setColor("transparent");
@@ -52,26 +31,29 @@ function Header(props) {
     }
     setIsOpen(!isOpen);
   };
-  const dropdownToggle = (e) => {
+
+  const dropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);
   };
+
   const getBrand = () => {
     let brandName = "Default Brand";
-    let name = localStorage.getItem('userName')
+    let name = localStorage.getItem("userName");
 
-    routes.map((prop, key) => {
+    routes.map((prop) => {
       if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
-        brandName = `Halo ${name} Selamat Datang di ${prop.name}`;
+        brandName = `Halo ${name} | ${prop.name}`;
       }
       return null;
     });
     return brandName;
   };
+
   const openSidebar = () => {
     document.documentElement.classList.toggle("nav-open");
     sidebarToggle.current.classList.toggle("toggled");
   };
-  // function that adds color dark/transparent to the navbar on resize (this is for the collapse)
+
   const updateColor = () => {
     if (window.innerWidth < 993 && isOpen) {
       setColor("dark");
@@ -79,9 +61,11 @@ function Header(props) {
       setColor("transparent");
     }
   };
+
   React.useEffect(() => {
     window.addEventListener("resize", updateColor.bind(this));
   });
+
   React.useEffect(() => {
     if (
       window.innerWidth < 993 &&
@@ -91,12 +75,10 @@ function Header(props) {
       sidebarToggle.current.classList.toggle("toggled");
     }
   }, [location]);
+
   return (
-    // add or remove classes depending if we are on full-screen-maps page or not
     <Navbar
-      color={
-        location.pathname.indexOf("full-screen-maps") !== -1 ? "dark" : color
-      }
+      color={location.pathname.indexOf("full-screen-maps") !== -1 ? "dark" : color}
       expand="lg"
       className={
         location.pathname.indexOf("full-screen-maps") !== -1
@@ -106,7 +88,7 @@ function Header(props) {
       }
     >
       <Container fluid>
-        <div className="navbar-wrapper">
+        <div className="text-small navbar-wrapper">
           <div className="navbar-toggle">
             <button
               type="button"
@@ -121,31 +103,26 @@ function Header(props) {
           </div>
           <NavbarBrand href="/">{getBrand()}</NavbarBrand>
         </div>
-        <NavbarToggler onClick={toggle}>
+        {/* <NavbarToggler onClick={toggle}>
           <span className="navbar-toggler-bar navbar-kebab" />
           <span className="navbar-toggler-bar navbar-kebab" />
           <span className="navbar-toggler-bar navbar-kebab" />
-        </NavbarToggler>
+        </NavbarToggler> */}
         <Collapse isOpen={isOpen} navbar className="justify-content-end">
-          
-          {/* <Nav navbar>
+          <Nav navbar>
             <NavItem>
-              <Link to="#pablo" className="nav-link btn-magnify">
+              <Link to="#" className="nav-link">
                 <i className="nc-icon nc-layout-11" />
                 <p>
-                  <span className="d-lg-none d-md-block">Stats</span>
+                  <span className="d-lg-none d-md-block">Dashboard</span>
                 </p>
               </Link>
             </NavItem>
-            <Dropdown
-              nav
-              isOpen={dropdownOpen}
-              toggle={(e) => dropdownToggle(e)}
-            >
+            <Dropdown nav isOpen={dropdownOpen} toggle={dropdownToggle}>
               <DropdownToggle caret nav>
                 <i className="nc-icon nc-bell-55" />
                 <p>
-                  <span className="d-lg-none d-md-block">Some Actions</span>
+                  <span className="d-lg-none d-md-block">Notifications</span>
                 </p>
               </DropdownToggle>
               <DropdownMenu right>
@@ -155,14 +132,14 @@ function Header(props) {
               </DropdownMenu>
             </Dropdown>
             <NavItem>
-              <Link to="#pablo" className="nav-link btn-rotate">
+              <Link to="#" className="nav-link">
                 <i className="nc-icon nc-settings-gear-65" />
                 <p>
-                  <span className="d-lg-none d-md-block">Account</span>
+                  <span className="d-lg-none d-md-block">Settings</span>
                 </p>
               </Link>
             </NavItem>
-          </Nav> */}
+          </Nav>
         </Collapse>
       </Container>
     </Navbar>
